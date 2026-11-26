@@ -1,51 +1,89 @@
-# Reddify (Blood Bank app)
+# Reddify – project guide for Claude Code
 
-## Project context
+## What this is
+Reddify (tagline "Every drop finds its way.") is a Flutter (Dart) Android app that connects blood seekers with voluntary donors in Bangladesh. It is a university mobile app course project. It is modelled on Bangladesh's government blood bank website (bloodbank.org.bd) and similar local blood donation apps, so it should feel close to apps people already know, only clearer and more polished.
 
-"Blood Bank" (on-screen name **Reddify**, tagline "Every drop finds its way.") is a mobile app for a university mobile app course. It connects people who urgently need blood with voluntary donors nearby. It is modelled on Bangladesh's government blood bank website (bloodbank.org.bd) and similar blood donation apps, so it should feel close to existing apps.
+- Full rules: `docs/requirements.md`. How the app behaves end to end: `docs/walkthrough.md`.
+  Read both before building any screen. If a screen needs a rule that isn't in them, ask me; don't invent one.
+- Product record for the impeccable skill: `PRODUCT.md`.
+- Target users: blood seekers (patients and families), voluntary donors (students and young adults), general users.
+- On-screen name is always `AppStrings.appName` ("Reddify"). Never hardcode "Blood Bank" in the UI.
 
-**Target users:** blood seekers (patients and families), voluntary donors (students and young adults), and general users.
+## Current phase: UI only
+- Build the frontend with mock data. No Supabase, Firebase or real network calls yet (Supabase auth/database and Firebase Cloud Messaging come later).
+- All data comes from `lib/data/mock/` through repository interfaces in `lib/data/repositories/`,
+  so the Supabase versions can replace the mocks later without touching screens.
+- State management: Provider (approved in this file, but tell me when you add it to `pubspec.yaml`).
+- Mock data must read as clearly fictional sample data. No invented statistics, testimonials or partner hospitals.
+- I preview in Chrome (`flutter run -d chrome`): `PhoneFrame` shows the app 430 px wide on wide screens. I take a screenshot of each screen.
 
-**Planned features (built in stages):** sign up/login, donor registration, search donors by blood group/location/name, donor details with call/SMS, blood requests with status tracking, donation history, availability toggle, dashboard, profile, blood bank directory, health tips, push notifications.
+## Folder structure (keep to this)
+```
+lib/
+  main.dart
+  app.dart                  # MaterialApp, theme, routes
+  theme/                    # colors.dart, text_styles.dart, spacing.dart, app_theme.dart
+  models/                   # user.dart, donor.dart, blood_request.dart, donation.dart, enums.dart
+  data/
+    repositories/           # abstract interfaces
+    mock/                   # mock implementations + sample data
+  providers/                # ChangeNotifier classes
+  screens/
+    auth/                   # login, seeker_signup, donor_registration/
+    home/
+    dashboard/
+    search/
+    requests/
+    donor/
+    profile/
+  widgets/                  # shared widgets: buttons, donor_card, status_chip, blood_group_badge, ...
+  utils/                    # validators (BD phone 01XXXXXXXXX), blood compatibility, eligibility dates
+```
+- One screen per file. One public widget per file in `widgets/`. A screen's private sub-widgets may live in `screens/<area>/widgets/`.
+- No big widgets, models or mock data inside screen files; screen files are for layout.
+- No file over ~300 lines; split into widgets instead.
 
-**Tech stack:** Flutter and Dart. Later: Supabase (database + auth) and Firebase Cloud Messaging.
+## Design rules
+- Use only colors, text styles and spacing from `lib/theme/`. No hard-coded colors or font sizes in screens.
+- Status colors: Green = Available, Yellow = Recently donated, Red = Not available. Always show a text label too,
+  never color alone. The status red must look clearly different from the brand crimson.
+- Primary action on a screen is a full-width red button; secondary actions are outlined.
+- Every list screen needs empty, loading and error states.
+- Minimum tap target 48 dp. Support small Android screens (360 dp wide); check 360 and 390 widths.
+- Material 3 components (NavigationBar, chips, snackbars, dialogs) themed through `app_theme.dart`.
+- Never use network images. Use icons, illustrations built from Flutter widgets, and initial-letter avatars.
 
-**Current stage: FIRST STAGE.** UI only with mock data, no backend. Screens are built one at a time and don't need to be connected. The owner tests in Chrome (`flutter run -d chrome`) and screenshots each screen, and will study and edit this code, so keep it clean and readable.
+### Design direction: "Donor Card Stamp" (chosen with the impeccable skill)
+The look comes from the printed donor cards that campus blood clubs hand out: **the blood group is a stamp, not a pill.**
+- Crimson `#A3122A` for primary actions, stamps and the app bar / top band. Card-stock background `#F4F1EC`. Card surface `#FFFDF9` with a 1 px warm border (`#E5DED5`). Slate ink `#1E2326` for text.
+- Type: Archivo via google_fonts. Pick Material roles from `Theme.of(context).textTheme`; don't hand-pick sizes.
+- Blood group: always `BloodGroupBadge`, in the same fixed-size square at the start of a row. Use the large tilted stamp at most once per screen.
+- Signature layout: a crimson band at the top with one `RaisedCard` overlapping its bottom edge (Home hero, Login).
+- Generous spacing, rounded cards, WCAG AA contrast.
+- Use `docs/inspiration.pdf` for inspiration only. Don't copy it; improve on it.
+- Full direction contract: `.impeccable/surfaces/lib.md`. Where it conflicts with this file (it mentions a slate FAB as the main action), this file wins.
+- Use the impeccable skill for design work. Its final review and DESIGN.md are still pending.
 
-`docs/inspiration.pdf` holds screens from another blood donation app. Use it for inspiration only. Don't copy it; improve on it. Use the impeccable skill for design direction.
-
-## Rules
-
-- **Structure inside `lib/`:**
-  - `main.dart`, `app.dart`
-  - `theme/`: `app_colors.dart`, `app_text_styles.dart`, `app_theme.dart`
-  - `models/`
-  - `data/` (mock data)
-  - `screens/` with subfolders `home/`, `auth/`, `donors/` (one file per screen)
-  - `widgets/` (reusable widgets)
-  - `utils/`: `constants.dart`, `validators.dart`
-- One screen per file. No big widgets, models or mock data inside screen files. Extract reusable widgets into `widgets/`. Keep every file under about 250 lines.
-- Material 3 and `google_fonts`. **No other packages without telling the user first.**
+## Working rules
+- Before a new feature, show me a short plan (screens, widgets, files) and wait for my OK.
+- After finishing a screen, make sure `flutter analyze` passes with no errors, then give me a short walkthrough of the new files and the main Flutter concepts used.
+- Explain any Flutter concept I might not know in a short comment or in your reply. I'm learning Flutter.
 - Beginner-readable code: clear names, short comments explaining *why*, `const` constructors, nothing clever.
-- Design: deep warm crimson primary (not pure red), soft off-white background, rounded cards, generous spacing, clear blood-group badges, 48dp touch targets, accessible contrast. Polished, not a generic template.
-- Screens must look good at mobile width in Chrome. Never use network images; use icons, illustrations built from Flutter widgets, and initial-letter avatars.
-- After each task: run `flutter analyze`, fix issues, then give the user a short walkthrough of the new files and the main Flutter concepts used.
+- Don't add packages without asking. Currently approved: google_fonts, Provider (when needed).
 
-## Design direction (chosen: "Donor Card Stamp")
-
-The design idea comes from the printed donor cards that campus blood clubs hand out: **the blood group is a stamp, not a pill.**
-
-- Colours: use `AppColors` / the theme only, never raw hex in screens. Crimson `#A3122A` for primary actions and stamps, card-stock background `#F4F1EC`, card surface `#FFFDF9` with a 1px warm border, slate ink `#1E2326` for text and the single FAB, green only for "available".
-- Type: Archivo via `AppTextStyles`; pick Material roles from `Theme.of(context).textTheme`, don't hand-pick sizes.
-- Blood group: always `BloodGroupBadge`, in the same fixed-size square at the start of a row. Use the large tilted stamp once per screen at most.
-- States never rely on red alone: pair colour with an icon or word.
-- Crimson app bar; standard Material controls (NavigationBar, FAB, chips, snackbars).
-- Full direction: `.impeccable/surfaces/lib.md`. Product facts: `PRODUCT.md`.
+## Known gaps (existing code written before these rules)
+Fix these as a planned task, not on the side:
+- Theme files are `app_colors.dart` / `app_text_styles.dart`; rename to `colors.dart` / `text_styles.dart` and add `spacing.dart`.
+- Spacing, radius, sizes and app strings live in `utils/constants.dart`; spacing belongs in `theme/spacing.dart`.
+- `Validators.phone` also accepts `+880…`/`880…`; requirements say `01XXXXXXXXX`.
+- Login screen uses email + password; requirements say mobile number + password.
+- Login screen shows a "Forgot password?" link; requirements say forgot password is not in version 1.
+- Home and Login read their content from `lib/data/home_content.dart` and local state, not through repositories/providers.
+- The availability colours in `AppColors` don't yet match Green / Yellow / Red.
 
 ## Commands
-
 ```sh
-flutter run -d chrome   # run in Chrome (shown in a 430px phone frame)
-flutter analyze         # must be clean after every task
+flutter run -d chrome   # preview in Chrome (430 px phone frame)
+flutter analyze         # must pass after every screen
 flutter test            # validator and constants tests
 ```

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../data/home_content.dart';
-import '../../theme/app_colors.dart';
+import '../../theme/colors.dart';
+import '../../theme/spacing.dart';
 import '../../utils/constants.dart';
 import '../../widgets/app_logo.dart';
 import '../../widgets/home_footer.dart';
@@ -9,6 +9,7 @@ import '../../widgets/home_hero.dart';
 import '../../widgets/section_header.dart';
 import '../../widgets/step_card.dart';
 import '../../widgets/trust_point.dart';
+import 'home_content.dart';
 
 /// The public Home screen. Anyone can see it without logging in.
 ///

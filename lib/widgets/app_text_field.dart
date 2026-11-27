@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../utils/constants.dart';
+import '../theme/spacing.dart';
 
 /// A labelled text field used in every form.
 ///

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../models/info_item.dart';
+import '../../models/info_item.dart';
 
 // Static text for the Home screen. Kept here (not in the screen file) so
 // the copy can be edited without touching layout code.
+//
+// This is fixed app copy, not data from a database, so it lives next to
+// the Home screen instead of behind a repository in lib/data/.
 //
 // Every point describes a feature Reddify is planned to have. We do not
 // show made-up numbers like "10,000 donors" because we have no real data.

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_colors.dart';
+import '../theme/colors.dart';
+import '../theme/spacing.dart';
 import '../utils/constants.dart';
 
 /// The Reddify logo: a small stamp-shaped square with a blood drop,

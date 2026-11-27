@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../models/info_item.dart';
-import '../theme/app_colors.dart';
-import '../utils/constants.dart';
+import '../theme/colors.dart';
+import '../theme/spacing.dart';
 
 /// One step in a "How it works" sequence.
 ///

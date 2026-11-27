@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_colors.dart';
-import '../utils/constants.dart';
+import '../theme/colors.dart';
+import '../theme/spacing.dart';
 
 /// A card that sits on top of the crimson band, with a soft shadow that
 /// lifts it off the colour behind it.

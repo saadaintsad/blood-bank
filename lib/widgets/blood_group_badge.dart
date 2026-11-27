@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_colors.dart';
-import '../theme/app_text_styles.dart';
+import '../theme/colors.dart';
+import '../theme/spacing.dart';
+import '../theme/text_styles.dart';
 import '../utils/constants.dart';
 
 /// Badge sizes. Each one is a fixed square, so a blood group always takes

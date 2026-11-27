@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_colors.dart';
-import '../utils/constants.dart';
+import '../theme/colors.dart';
+import '../theme/spacing.dart';
 
 /// Shows the app inside a phone-sized frame on wide screens.
 ///

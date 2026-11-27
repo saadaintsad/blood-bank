@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../../utils/constants.dart';
+import '../../../providers/auth_provider.dart';
+import '../../../theme/spacing.dart';
+import '../../../utils/phone_number.dart';
 import '../../../utils/validators.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/app_text_field.dart';
 
-/// The login form: title, email, password, "Remember me", "Forgot
-/// password?" and the Log in button.
+/// The login form: title, mobile number, password and the Log in button.
 ///
-/// It is Stateful because it owns the text controllers, the checkbox value
-/// and the Form's key. The screen around it only handles layout.
+/// It is Stateful because it owns the text controllers and the Form's key.
+/// The login itself is done by AuthProvider. The screen around this form
+/// only handles layout.
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
 
@@ -21,29 +24,44 @@ class _LoginFormState extends State<LoginForm> {
   // The key gives us access to the Form, so we can validate every field
   // at once when the button is pressed.
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _rememberMe = false;
 
   // Controllers hold resources, so we release them when the widget is
   // removed from the screen.
   @override
   void dispose() {
-    _emailController.dispose();
+    _phoneController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     // validate() runs every field's validator and shows the error
     // messages. It returns true only if all fields are valid.
     final isValid = _formKey.currentState!.validate();
     if (!isValid) return;
 
-    // No backend yet, so we just confirm that the form worked.
-    final email = _emailController.text.trim();
+    // The validator already passed, so this is never null here. We send
+    // the stored 01XXXXXXXXX format, even if the user typed +880...
+    final phone = normalizeBangladeshiPhone(_phoneController.text)!;
+
+    // context.read gets the provider once, without rebuilding on changes.
+    final auth = context.read<AuthProvider>();
+    final success = await auth.logIn(
+      phone: phone,
+      password: _passwordController.text,
+    );
+
+    // After an `await`, the widget may have left the screen. `mounted`
+    // tells us whether it is still safe to use `context`.
+    if (!mounted) return;
+
+    final message = success
+        ? 'Logged in as ${auth.currentUser!.name} (demo account)'
+        : auth.errorMessage!;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Logged in as $email (demo, no account check yet)')),
+      SnackBar(content: Text(message)),
     );
   }
 
@@ -51,9 +69,13 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
+    // context.watch rebuilds this widget whenever AuthProvider calls
+    // notifyListeners(), so the button spinner follows isLoading.
+    final isLoading = context.watch<AuthProvider>().isLoading;
+
     return Form(
       key: _formKey,
-      // AutofillGroup lets password managers fill email + password together.
+      // AutofillGroup lets password managers fill number + password together.
       child: AutofillGroup(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -66,13 +88,13 @@ class _LoginFormState extends State<LoginForm> {
             ),
             const SizedBox(height: AppSpacing.lg),
             AppTextField(
-              label: 'Email',
-              hint: 'name@example.com',
-              icon: Icons.mail_outline,
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              autofillHints: const [AutofillHints.email],
-              validator: Validators.email,
+              label: 'Mobile number',
+              hint: '01XXXXXXXXX',
+              icon: Icons.phone_outlined,
+              controller: _phoneController,
+              keyboardType: TextInputType.phone,
+              autofillHints: const [AutofillHints.telephoneNumber],
+              validator: Validators.phone,
             ),
             const SizedBox(height: AppSpacing.md),
             AppTextField(
@@ -84,53 +106,22 @@ class _LoginFormState extends State<LoginForm> {
               textInputAction: TextInputAction.done,
               autofillHints: const [AutofillHints.password],
               // At login we only check that a password was typed. The
-              // strength rules (Validators.password) belong on Register,
+              // strength rules (Validators.password) belong on sign-up,
               // so older passwords are never rejected here.
               validator: (value) =>
                   Validators.requiredField(value, fieldName: 'Password'),
               // Pressing Enter in the password field logs in.
               onSubmitted: (_) => _submit(),
             ),
-            const SizedBox(height: AppSpacing.sm),
-            _buildOptionsRow(),
-            const SizedBox(height: AppSpacing.md),
-            AppButton(label: 'Log in', onPressed: _submit),
+            const SizedBox(height: AppSpacing.lg),
+            AppButton(
+              label: 'Log in',
+              isLoading: isLoading,
+              onPressed: _submit,
+            ),
           ],
         ),
       ),
-    );
-  }
-
-  /// "Remember me" on the left, "Forgot password?" on the right.
-  Widget _buildOptionsRow() {
-    return Row(
-      children: [
-        Expanded(
-          // InkWell makes the label tappable too, not just the small box.
-          child: InkWell(
-            onTap: () => setState(() => _rememberMe = !_rememberMe),
-            borderRadius: BorderRadius.circular(AppRadius.badge),
-            child: Row(
-              children: [
-                Checkbox(
-                  value: _rememberMe,
-                  onChanged: (value) =>
-                      setState(() => _rememberMe = value ?? false),
-                  visualDensity: VisualDensity.compact,
-                ),
-                const Flexible(child: Text('Remember me')),
-              ],
-            ),
-          ),
-        ),
-        TextButton(
-          onPressed: () {}, // Forgot password screen comes later.
-          style: TextButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-          ),
-          child: const Text('Forgot password?'),
-        ),
-      ],
     );
   }
 }

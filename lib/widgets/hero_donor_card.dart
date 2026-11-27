@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_colors.dart';
-import '../utils/constants.dart';
+import '../models/enums.dart';
+import '../theme/spacing.dart';
 import 'blood_group_badge.dart';
 import 'raised_card.dart';
+import 'status_chip.dart';
 
 /// The hero illustration: a donor card with a big blood-group stamp.
 ///
@@ -39,7 +40,10 @@ class HeroDonorCard extends StatelessWidget {
                   style: textTheme.bodySmall,
                 ),
                 const SizedBox(height: AppSpacing.sm + 2),
-                const _AvailableChip(),
+                const StatusChip(
+                  status: DonorStatus.available,
+                  label: 'Available to donate',
+                ),
               ],
             ),
           ),
@@ -72,36 +76,6 @@ class _StampPress extends StatelessWidget {
         return Transform.scale(scale: scale, child: child);
       },
       child: child,
-    );
-  }
-}
-
-/// "Available to donate" label. Uses an icon and a word, not colour alone.
-class _AvailableChip extends StatelessWidget {
-  const _AvailableChip();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: AppColors.successSoft,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.check_circle, size: 16, color: AppColors.success),
-          const SizedBox(width: 6),
-          Text(
-            'Available to donate',
-            style: Theme.of(context)
-                .textTheme
-                .labelMedium
-                ?.copyWith(color: AppColors.success),
-          ),
-        ],
-      ),
     );
   }
 }

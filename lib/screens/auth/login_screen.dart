@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../theme/app_colors.dart';
+import '../../theme/colors.dart';
+import '../../theme/spacing.dart';
 import '../../utils/constants.dart';
 import '../../widgets/app_logo.dart';
 import '../../widgets/raised_card.dart';

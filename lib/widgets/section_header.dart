@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../utils/constants.dart';
+import '../theme/spacing.dart';
 
 /// A title for a group of content, with an optional action on the right.
 ///

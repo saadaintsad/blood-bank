@@ -1,3 +1,5 @@
+import 'phone_number.dart';
+
 /// Form validators for TextFormField.
 ///
 /// Each method returns `null` when the value is valid, or an error message
@@ -31,17 +33,15 @@ class Validators {
 
   /// A Bangladeshi mobile number.
   ///
-  /// Accepts +8801XXXXXXXXX, 8801XXXXXXXXX or 01XXXXXXXXX. Spaces and
-  /// dashes are ignored. The digit after "01" is the operator code (3-9).
+  /// Accepts 01XXXXXXXXX, +8801XXXXXXXXX or 8801XXXXXXXXX, with or without
+  /// spaces and dashes. Before saving, turn the input into the stored
+  /// 01XXXXXXXXX format with normalizeBangladeshiPhone().
   static String? phone(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Phone number is required';
+      return 'Mobile number is required';
     }
-    // Remove spaces and dashes so "017-1234 5678" is accepted too.
-    final digits = value.replaceAll(RegExp(r'[\s-]'), '');
-    final phonePattern = RegExp(r'^(\+?88)?01[3-9]\d{8}$');
-    if (!phonePattern.hasMatch(digits)) {
-      return 'Enter a valid Bangladeshi number, e.g. +8801712345678';
+    if (normalizeBangladeshiPhone(value) == null) {
+      return 'Enter a valid Bangladeshi mobile number, e.g. 01712345678';
     }
     return null;
   }

@@ -61,29 +61,33 @@ The look comes from the printed donor cards that campus blood clubs hand out: **
 - Signature layout: a crimson band at the top with one `RaisedCard` overlapping its bottom edge (Home hero, Login).
 - Generous spacing, rounded cards, WCAG AA contrast.
 - Use `docs/inspiration.pdf` for inspiration only. Don't copy it; improve on it.
-- Full direction contract: `.impeccable/surfaces/lib.md`. Where it conflicts with this file (it mentions a slate FAB as the main action), this file wins.
+- Status: `StatusChip` with `DonorStatus` (`models/enums.dart`) and the `AppColors.status…` tokens. The status red is a bright scarlet, never the brand crimson.
+- Full direction contract: `.impeccable/surfaces/lib.md`. Where it conflicts with this file, this file wins.
 - Use the impeccable skill for design work. Its final review and DESIGN.md are still pending.
 
 ## Working rules
 - Before a new feature, show me a short plan (screens, widgets, files) and wait for my OK.
-- After finishing a screen, make sure `flutter analyze` passes with no errors, then give me a short walkthrough of the new files and the main Flutter concepts used.
+- **After every task, run `flutter analyze` and `flutter test` and fix all errors before reporting done.**
+- Then give me a short walkthrough of the new files and the main Flutter concepts used.
+- New logic in `utils/`, `providers/` or `data/` gets unit tests in `test/` (same folder layout).
 - Explain any Flutter concept I might not know in a short comment or in your reply. I'm learning Flutter.
 - Beginner-readable code: clear names, short comments explaining *why*, `const` constructors, nothing clever.
-- Don't add packages without asking. Currently approved: google_fonts, Provider (when needed).
+- Don't add packages without asking. Currently in use: google_fonts, provider.
 
-## Known gaps (existing code written before these rules)
-Fix these as a planned task, not on the side:
-- Theme files are `app_colors.dart` / `app_text_styles.dart`; rename to `colors.dart` / `text_styles.dart` and add `spacing.dart`.
-- Spacing, radius, sizes and app strings live in `utils/constants.dart`; spacing belongs in `theme/spacing.dart`.
-- `Validators.phone` also accepts `+880…`/`880…`; requirements say `01XXXXXXXXX`.
-- Login screen uses email + password; requirements say mobile number + password.
-- Login screen shows a "Forgot password?" link; requirements say forgot password is not in version 1.
-- Home and Login read their content from `lib/data/home_content.dart` and local state, not through repositories/providers.
-- The availability colours in `AppColors` don't yet match Green / Yellow / Red.
+## Conventions already in the code
+- `utils/constants.dart` holds app strings (`AppStrings`), placeholder footer contact details (`AppContact`), `bloodGroups` and `bangladeshDistricts`. Spacing, radius and sizes live in `theme/spacing.dart`.
+- Phone numbers: users may type `01…`, `+8801…` or `8801…`; `normalizeBangladeshiPhone()` (`utils/phone_number.dart`) turns them into the stored `01XXXXXXXXX`. Always normalize before saving or sending.
+- Fixed screen copy (not data) may live next to its screen, e.g. `screens/home/home_content.dart`. Anything that will come from Supabase goes through `data/repositories/`.
+- Mock login accepts only the sample accounts in `data/mock/sample_users.dart` (`01700000001` or `01700000002`, password `demo1234`).
+- `app.dart` shows one screen as `home:` until routes are added.
+
+## Next tasks (agreed, not started)
+- Home screen to match requirements.md (logged out: Find Blood, Register as Donor, "Already have an account? Log in" link).
+- Routes in `app.dart`.
 
 ## Commands
 ```sh
 flutter run -d chrome   # preview in Chrome (430 px phone frame)
-flutter analyze         # must pass after every screen
-flutter test            # validator and constants tests
+flutter analyze         # must pass after every task
+flutter test            # must pass after every task
 ```

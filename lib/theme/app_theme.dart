@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../utils/constants.dart';
-import 'app_colors.dart';
-import 'app_text_styles.dart';
+import 'colors.dart';
+import 'spacing.dart';
+import 'text_styles.dart';
 
 /// Builds the Material 3 theme for the whole app.
 ///
@@ -89,17 +89,6 @@ class AppTheme {
           // Keep even small text buttons at the 48dp touch-target size.
           minimumSize: const Size(48, AppSizes.minTouchTarget),
           textStyle: textTheme.labelLarge,
-        ),
-      ),
-
-      // The single main action on a screen ("Request blood") is slate,
-      // so it stands apart from the crimson header and stamps.
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: AppColors.ink,
-        foregroundColor: Colors.white,
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(AppRadius.field)),
         ),
       ),
 

@@ -51,16 +51,31 @@ class AppColors {
   static const Color inkMuted = Color(0xFF5B6469);
 
   // ---------------------------------------------------------------------------
-  // States
+  // Donor status: Green / Yellow / Red
   // ---------------------------------------------------------------------------
-  // Red is our brand colour, so states must never rely on colour alone.
-  // Always pair them with an icon or a word ("Available", "Pending").
+  // Red is also our brand colour, so a status must never rely on colour
+  // alone. StatusChip always shows an icon and a word next to the colour.
+  // Each status has an icon colour, a text colour and a soft background.
 
-  static const Color success = Color(0xFF1D6B3A);
-  static const Color successSoft = Color(0xFFE3F1E7);
+  /// Green: Available.
+  static const Color statusAvailable = Color(0xFF1D6B3A);
+  static const Color statusAvailableSoft = Color(0xFFE3F1E7);
 
-  static const Color warning = Color(0xFF8A5300);
-  static const Color warningSoft = Color(0xFFFBEED3);
+  /// Yellow: Recently donated. Pure yellow is unreadable on white, so the
+  /// icon is a deep amber and the text an even darker amber.
+  static const Color statusRecentlyDonated = Color(0xFFB07800);
+  static const Color statusRecentlyDonatedText = Color(0xFF7A4A00);
+  static const Color statusRecentlyDonatedSoft = Color(0xFFFBEED3);
+
+  /// Red: Not available. A bright scarlet, clearly different from the deep
+  /// brand crimson. Its label uses [ink] so red text is never mistaken for
+  /// a crimson button or link.
+  static const Color statusNotAvailable = Color(0xFFE53935);
+  static const Color statusNotAvailableSoft = Color(0xFFFDEBEA);
+
+  // ---------------------------------------------------------------------------
+  // Form errors
+  // ---------------------------------------------------------------------------
 
   static const Color error = Color(0xFFB3261E);
   static const Color errorSoft = Color(0xFFFBE4E2);

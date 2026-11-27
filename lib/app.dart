@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'data/mock/mock_auth_repository.dart';
+import 'data/mock/mock_donor_repository.dart';
+import 'data/mock/mock_store.dart';
 import 'providers/auth_provider.dart';
+import 'screens/auth/donor_registration/donor_registration_screen.dart';
 import 'screens/auth/login_screen.dart';
+import 'screens/auth/seeker_signup_screen.dart';
 import 'screens/coming_soon/coming_soon_screen.dart';
 import 'screens/home/home_screen.dart';
 import 'theme/app_theme.dart';
@@ -22,9 +26,17 @@ class ReddifyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // ChangeNotifierProvider creates AuthProvider once and makes it
     // available to every screen below it. To switch to Supabase later,
-    // only the repository passed in here changes.
+    // only the repositories passed in here change.
     return ChangeNotifierProvider(
-      create: (_) => AuthProvider(const MockAuthRepository()),
+      create: (_) {
+        // One shared in-memory "database" for both mock repositories, so
+        // a donor profile saved by one is seen by the other.
+        final store = MockStore();
+        return AuthProvider(
+          MockAuthRepository(store),
+          MockDonorRepository(store),
+        );
+      },
       child: MaterialApp(
         title: AppStrings.appName,
         debugShowCheckedModeBanner: false,
@@ -39,6 +51,8 @@ class ReddifyApp extends StatelessWidget {
         routes: {
           AppRoutes.home: (_) => const HomeScreen(),
           AppRoutes.login: (_) => const LoginScreen(),
+          AppRoutes.seekerSignup: (_) => const SeekerSignupScreen(),
+          AppRoutes.donorRegistration: (_) => const DonorRegistrationScreen(),
           AppRoutes.comingSoon: (_) => const ComingSoonScreen(),
         },
       ),

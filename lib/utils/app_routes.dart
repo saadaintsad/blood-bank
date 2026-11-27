@@ -10,6 +10,13 @@ class AppRoutes {
   static const String home = '/';
   static const String login = '/login';
 
+  /// Seeker sign-up (name, number, password). Pass `arguments: true` to
+  /// continue to Find Blood after signing up.
+  static const String seekerSignup = '/sign-up';
+
+  /// The multi-step donor registration form.
+  static const String donorRegistration = '/register-donor';
+
   /// Placeholder for screens that are not built yet. Pass the feature
   /// name as `arguments`, e.g. pushNamed(comingSoon, arguments: 'Find Blood').
   static const String comingSoon = '/coming-soon';

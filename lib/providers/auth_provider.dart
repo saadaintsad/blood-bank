@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 
 import '../data/repositories/auth_repository.dart';
+import '../data/repositories/donor_repository.dart';
+import '../models/donor.dart';
 import '../models/user.dart';
 
 /// Holds the login state and tells listening widgets when it changes.
@@ -8,11 +10,12 @@ import '../models/user.dart';
 /// A ChangeNotifier is a class that can call notifyListeners(). Widgets
 /// that "watch" it (with Provider's context.watch) rebuild when it does.
 class AuthProvider extends ChangeNotifier {
-  AuthProvider(this._repository);
+  AuthProvider(this._authRepository, this._donorRepository);
 
-  // The provider talks to the interface, not to the mock directly, so the
-  // Supabase version can be swapped in later from app.dart.
-  final AuthRepository _repository;
+  // The provider talks to the interfaces, not to the mocks directly, so the
+  // Supabase versions can be swapped in later from app.dart.
+  final AuthRepository _authRepository;
+  final DonorRepository _donorRepository;
 
   AppUser? _currentUser;
   bool _isLoading = false;
@@ -21,10 +24,10 @@ class AuthProvider extends ChangeNotifier {
   /// The logged-in user, or null when nobody is logged in.
   AppUser? get currentUser => _currentUser;
 
-  /// True while a login request is running.
+  /// True while a login, sign-up or donor registration is running.
   bool get isLoading => _isLoading;
 
-  /// Message from the last failed login, or null.
+  /// Message from the last failed action, or null.
   String? get errorMessage => _errorMessage;
 
   bool get isLoggedIn => _currentUser != null;
@@ -32,23 +35,39 @@ class AuthProvider extends ChangeNotifier {
   /// Tries to log in. Returns true on success.
   ///
   /// [phone] must already be normalized to 01XXXXXXXXX.
-  Future<bool> logIn({required String phone, required String password}) async {
-    _isLoading = true;
-    _errorMessage = null;
-    notifyListeners(); // Show the spinner.
+  Future<bool> logIn({required String phone, required String password}) {
+    return _run(() async {
+      _currentUser =
+          await _authRepository.logIn(phone: phone, password: password);
+    });
+  }
 
-    try {
-      _currentUser = await _repository.logIn(phone: phone, password: password);
-      return true;
-    } on AuthException catch (error) {
-      _errorMessage = error.message;
-      return false;
-    } finally {
-      // `finally` runs after success *and* failure, so the spinner always
-      // stops.
-      _isLoading = false;
-      notifyListeners();
-    }
+  /// Creates a seeker account and logs straight into it. Returns true on
+  /// success. [phone] must already be normalized.
+  Future<bool> signUp({
+    required String name,
+    required String phone,
+    required String password,
+  }) {
+    return _run(() async {
+      _currentUser = await _authRepository.signUp(
+        name: name,
+        phone: phone,
+        password: password,
+      );
+    });
+  }
+
+  /// Adds [profile] to the logged-in account, making the user a donor.
+  /// Returns true on success.
+  ///
+  /// For a brand-new user, call [signUp] first so there is an account
+  /// (and a user id) to attach the profile to.
+  Future<bool> registerDonor(DonorProfile profile) {
+    return _run(() async {
+      await _donorRepository.registerDonor(profile);
+      _currentUser = _currentUser!.copyWith(isDonor: true);
+    });
   }
 
   /// Logs the current user out.
@@ -59,5 +78,32 @@ class AuthProvider extends ChangeNotifier {
     _currentUser = null;
     _errorMessage = null;
     notifyListeners(); // Screens watching us switch to the logged-out view.
+  }
+
+  /// Runs [action] with the spinner on, and turns a repository error into
+  /// [errorMessage]. Returns true if [action] finished without an error.
+  ///
+  /// logIn, signUp and registerDonor all need the same steps, so they share
+  /// this helper instead of repeating them.
+  Future<bool> _run(Future<void> Function() action) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners(); // Show the spinner.
+
+    try {
+      await action();
+      return true;
+    } on AuthException catch (error) {
+      _errorMessage = error.message;
+      return false;
+    } on DonorException catch (error) {
+      _errorMessage = error.message;
+      return false;
+    } finally {
+      // `finally` runs after success *and* failure, so the spinner always
+      // stops.
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 }

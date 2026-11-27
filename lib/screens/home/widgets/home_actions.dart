@@ -40,7 +40,15 @@ class HomeActions extends StatelessWidget {
         AppButton(
           label: 'Find Blood',
           icon: Icons.search,
-          onPressed: () => _openComingSoon(context, 'Find Blood'),
+          // Logged-out users sign up first (just name, number, password),
+          // then continue to Find Blood.
+          onPressed: isLoggedIn
+              ? () => _openComingSoon(context, 'Find Blood')
+              : () => Navigator.pushNamed(
+                    context,
+                    AppRoutes.seekerSignup,
+                    arguments: true, // continue to Find Blood afterwards
+                  ),
         ),
         if (isLoggedIn) ...[
           gap,
@@ -56,7 +64,8 @@ class HomeActions extends StatelessWidget {
           AppButton(
             label: 'Register as Donor',
             variant: AppButtonVariant.outlined,
-            onPressed: () => _openComingSoon(context, 'Register as Donor'),
+            onPressed: () =>
+                Navigator.pushNamed(context, AppRoutes.donorRegistration),
           ),
         ],
         if (!isLoggedIn) ...[

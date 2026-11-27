@@ -78,12 +78,14 @@ The look comes from the printed donor cards that campus blood clubs hand out: **
 - `utils/constants.dart` holds app strings (`AppStrings`), placeholder footer contact details (`AppContact`), `bloodGroups` and `bangladeshDistricts`. Spacing, radius and sizes live in `theme/spacing.dart`.
 - Phone numbers: users may type `01…`, `+8801…` or `8801…`; `normalizeBangladeshiPhone()` (`utils/phone_number.dart`) turns them into the stored `01XXXXXXXXX`. Always normalize before saving or sending.
 - Fixed screen copy (not data) may live next to its screen, e.g. `screens/home/home_content.dart`. Anything that will come from Supabase goes through `data/repositories/`.
-- Mock login accepts only the sample accounts in `data/mock/sample_users.dart` (`01700000001` or `01700000002`, password `demo1234`).
+- Mock login starts with the sample accounts in `data/mock/sample_users.dart` (`01700000001` or `01700000002`, password `demo1234`). Accounts created in the app also work until the page reloads.
 - Named routes: names in `utils/app_routes.dart` (`AppRoutes`), route table in `app.dart`. Buttons for screens not built yet push `AppRoutes.comingSoon` with the feature name as `arguments`.
+- Mock repositories share one in-memory `MockStore` (`data/mock/mock_store.dart`), created once in `app.dart` and passed to every mock repository. That is how an account made on sign-up can log in later, and how a donor profile saved by `MockDonorRepository` makes `MockAuthRepository` return `isDonor: true`. New mock repositories read and write the same store; tests create a fresh `MockStore()` each time.
 - `AppUser.isDonor` decides donor-only UI (Sample Donor is a donor, Sample Seeker is not). Log out is a temporary app-bar icon on Home until Profile exists.
 
 ## Next tasks (agreed, not started)
-- None yet. Agree the next task before starting.
+- Donation history (when built): the last donation date entered at registration (`DonorProfile.lastDonationDate`) must count as the first entry in the donor's history. Registration doesn't create that entry yet.
+- Agree the next task before starting.
 
 ## Commands
 ```sh

@@ -21,3 +21,16 @@ enum DonorStatus {
   /// Default text shown next to the status colour.
   final String label;
 }
+
+/// A donor's gender. It decides the waiting period between donations
+/// (see utils/eligibility.dart), so registration asks for it.
+enum Gender {
+  male('Male'),
+  female('Female'),
+  other('Other');
+
+  const Gender(this.label);
+
+  /// Text shown on the gender buttons.
+  final String label;
+}

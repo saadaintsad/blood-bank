@@ -24,6 +24,7 @@ class AppTextField extends StatefulWidget {
     this.hint,
     this.icon,
     this.controller,
+    this.initialValue,
     this.validator,
     this.keyboardType,
     this.textInputAction = TextInputAction.next,
@@ -37,6 +38,10 @@ class AppTextField extends StatefulWidget {
   final String? hint;
   final IconData? icon;
   final TextEditingController? controller;
+
+  /// Starting text when there is no [controller]. Use one or the other.
+  final String? initialValue;
+
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final TextInputAction textInputAction;
@@ -74,6 +79,7 @@ class _AppTextFieldState extends State<AppTextField> {
         const SizedBox(height: AppSpacing.sm),
         TextFormField(
           controller: widget.controller,
+          initialValue: widget.initialValue,
           validator: widget.validator,
           keyboardType: widget.keyboardType,
           textInputAction: widget.textInputAction,

@@ -10,4 +10,10 @@ void main() {
     expect(bangladeshDistricts.length, 64);
     expect(bangladeshDistricts.toSet().length, 64); // no duplicates
   });
+
+  test('Dhaka areas have no duplicates and are in alphabetical order', () {
+    expect(dhakaAreas.toSet().length, dhakaAreas.length);
+    final sorted = [...dhakaAreas]..sort();
+    expect(dhakaAreas, sorted);
+  });
 }

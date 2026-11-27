@@ -109,6 +109,48 @@ class AppTheme {
         shape: const StadiumBorder(),
       ),
 
+      // Button groups such as Male / Female / Other. The chosen one gets
+      // the soft crimson fill, like a selected chip.
+      segmentedButtonTheme: SegmentedButtonThemeData(
+        style: SegmentedButton.styleFrom(
+          backgroundColor: AppColors.surface,
+          foregroundColor: AppColors.ink,
+          selectedBackgroundColor: AppColors.primarySoft,
+          selectedForegroundColor: AppColors.primaryDark,
+          side: const BorderSide(color: AppColors.border),
+          minimumSize: const Size(0, AppSizes.minTouchTarget),
+          textStyle: textTheme.labelLarge,
+        ),
+      ),
+
+      checkboxTheme: CheckboxThemeData(
+        side: const BorderSide(color: AppColors.inkMuted, width: 1.5),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+      ),
+
+      // Crimson track when on. The thumb icon makes on/off readable
+      // without relying on colour alone.
+      switchTheme: SwitchThemeData(
+        thumbIcon: WidgetStateProperty.resolveWith(
+          (states) => Icon(
+            states.contains(WidgetState.selected) ? Icons.check : Icons.close,
+          ),
+        ),
+      ),
+
+      datePickerTheme: const DatePickerThemeData(
+        backgroundColor: AppColors.surface,
+        headerBackgroundColor: AppColors.primary,
+        headerForegroundColor: AppColors.onPrimary,
+      ),
+
+      // The open list of a DropdownMenu (district and area pickers).
+      dropdownMenuTheme: const DropdownMenuThemeData(
+        menuStyle: MenuStyle(
+          backgroundColor: WidgetStatePropertyAll(AppColors.surface),
+        ),
+      ),
+
       snackBarTheme: SnackBarThemeData(
         backgroundColor: AppColors.ink,
         contentTextStyle:

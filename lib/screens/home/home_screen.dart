@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../theme/colors.dart';
+import '../../providers/auth_provider.dart';
 import '../../theme/spacing.dart';
 import '../../utils/constants.dart';
 import '../../widgets/app_logo.dart';
@@ -10,25 +11,30 @@ import '../../widgets/section_header.dart';
 import '../../widgets/step_card.dart';
 import '../../widgets/trust_point.dart';
 import 'home_content.dart';
+import 'widgets/home_actions.dart';
 
-/// The public Home screen. Anyone can see it without logging in.
+/// The Home screen. Anyone can see it, logged in or not.
 ///
-/// It explains what Reddify does and offers the two main paths:
-/// finding blood and becoming a donor. Buttons do nothing yet; they will
-/// open other screens in later stages.
+/// It explains what Reddify does and shows the main actions. Which
+/// actions appear depends on login state (see HomeActions).
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final isLoggedIn = context.watch<AuthProvider>().isLoggedIn;
+
     return Scaffold(
       appBar: AppBar(
         title: const AppLogo(onDark: true),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: AppSpacing.md),
-            child: _LoginButton(onPressed: () {}),
-          ),
+          // Temporary: log out lives here until the Profile screen exists.
+          if (isLoggedIn)
+            IconButton(
+              icon: const Icon(Icons.logout),
+              tooltip: 'Log out',
+              onPressed: () => context.read<AuthProvider>().logOut(),
+            ),
         ],
       ),
       // SingleChildScrollView + Column, because this page is a short,
@@ -37,7 +43,7 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            HomeHero(onFindBlood: () {}, onBecomeDonor: () {}),
+            const HomeHero(actions: HomeActions()),
             _buildHowItWorks(),
             const SizedBox(height: AppSpacing.lg),
             _buildWhyReddify(),
@@ -94,28 +100,6 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-/// White pill button for the crimson app bar.
-class _LoginButton extends StatelessWidget {
-  const _LoginButton({required this.onPressed});
-
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return FilledButton(
-      onPressed: onPressed,
-      // Override the theme colours just for this button, because the
-      // normal crimson button would disappear on the crimson bar.
-      style: FilledButton.styleFrom(
-        backgroundColor: Colors.white,
-        foregroundColor: AppColors.primary,
-        minimumSize: const Size(88, 40),
-      ),
-      child: const Text('Log in'),
     );
   }
 }

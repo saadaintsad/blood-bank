@@ -2,23 +2,20 @@ import 'package:flutter/material.dart';
 
 import '../theme/colors.dart';
 import '../theme/spacing.dart';
-import 'app_button.dart';
 import 'hero_donor_card.dart';
 
 /// The top section of the Home screen.
 ///
 /// A crimson band (continuing the app bar) holds the headline. The donor
-/// card illustration sits across the bottom edge of the band, and the two
-/// main buttons sit below it.
+/// card illustration sits across the bottom edge of the band, and the
+/// [actions] sit below it.
 class HomeHero extends StatelessWidget {
-  const HomeHero({
-    super.key,
-    required this.onFindBlood,
-    required this.onBecomeDonor,
-  });
+  const HomeHero({super.key, required this.actions});
 
-  final VoidCallback onFindBlood;
-  final VoidCallback onBecomeDonor;
+  /// The buttons shown under the card. The screen passes them in, because
+  /// which buttons appear depends on login state, and the hero should only
+  /// care about layout.
+  final Widget actions;
 
   /// How much of the card's height (0 to 1) has crimson behind it.
   static const double _bandShare = 0.4;
@@ -87,7 +84,7 @@ class HomeHero extends StatelessWidget {
           child: const HeroDonorCard(),
         ),
 
-        // 3. The two main actions.
+        // 3. The main actions.
         Padding(
           padding: const EdgeInsets.fromLTRB(
             AppSpacing.md,
@@ -95,21 +92,7 @@ class HomeHero extends StatelessWidget {
             AppSpacing.md,
             0,
           ),
-          child: Column(
-            children: [
-              AppButton(
-                label: 'Find Blood',
-                icon: Icons.search,
-                onPressed: onFindBlood,
-              ),
-              const SizedBox(height: AppSpacing.sm + 4),
-              AppButton(
-                label: 'Become a Donor',
-                variant: AppButtonVariant.outlined,
-                onPressed: onBecomeDonor,
-              ),
-            ],
-          ),
+          child: actions,
         ),
       ],
     );

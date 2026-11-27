@@ -12,5 +12,10 @@ const String samplePassword = 'demo1234';
 /// Accounts the mock login accepts.
 const List<AppUser> sampleUsers = [
   AppUser(id: 'user-1', name: 'Sample Seeker', phone: '01700000001'),
-  AppUser(id: 'user-2', name: 'Sample Donor', phone: '01700000002'),
+  AppUser(
+    id: 'user-2',
+    name: 'Sample Donor',
+    phone: '01700000002',
+    isDonor: true,
+  ),
 ];

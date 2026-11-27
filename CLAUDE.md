@@ -79,11 +79,11 @@ The look comes from the printed donor cards that campus blood clubs hand out: **
 - Phone numbers: users may type `01…`, `+8801…` or `8801…`; `normalizeBangladeshiPhone()` (`utils/phone_number.dart`) turns them into the stored `01XXXXXXXXX`. Always normalize before saving or sending.
 - Fixed screen copy (not data) may live next to its screen, e.g. `screens/home/home_content.dart`. Anything that will come from Supabase goes through `data/repositories/`.
 - Mock login accepts only the sample accounts in `data/mock/sample_users.dart` (`01700000001` or `01700000002`, password `demo1234`).
-- `app.dart` shows one screen as `home:` until routes are added.
+- Named routes: names in `utils/app_routes.dart` (`AppRoutes`), route table in `app.dart`. Buttons for screens not built yet push `AppRoutes.comingSoon` with the feature name as `arguments`.
+- `AppUser.isDonor` decides donor-only UI (Sample Donor is a donor, Sample Seeker is not). Log out is a temporary app-bar icon on Home until Profile exists.
 
 ## Next tasks (agreed, not started)
-- Home screen to match requirements.md (logged out: Find Blood, Register as Donor, "Already have an account? Log in" link).
-- Routes in `app.dart`.
+- None yet. Agree the next task before starting.
 
 ## Commands
 ```sh

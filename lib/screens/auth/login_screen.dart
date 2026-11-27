@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/colors.dart';
 import '../../theme/spacing.dart';
+import '../../utils/app_routes.dart';
 import '../../utils/constants.dart';
 import '../../widgets/app_logo.dart';
 import '../../widgets/raised_card.dart';
@@ -57,12 +58,24 @@ class LoginScreen extends StatelessWidget {
                     AuthSwitchPrompt(
                       question: "Don't have an account?",
                       actionLabel: 'Register',
-                      onPressed: () {}, // Register screen comes later.
+                      // The Register screen comes later.
+                      onPressed: () => Navigator.pushNamed(
+                        context,
+                        AppRoutes.comingSoon,
+                        arguments: 'Register',
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
+            // No app bar on this screen, so we add our own back arrow,
+            // drawn last so it sits on top. Only shown when there is a
+            // screen to go back to.
+            if (Navigator.canPop(context))
+              const SafeArea(
+                child: BackButton(color: AppColors.onPrimary),
+              ),
           ],
         ),
       ),

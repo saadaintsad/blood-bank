@@ -63,6 +63,12 @@ class _LoginFormState extends State<LoginForm> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
+
+    // Go back to the screen that opened Login (usually Home), which now
+    // shows the logged-in version. The snackbar stays visible because it
+    // belongs to the app-wide ScaffoldMessenger, not to this screen.
+    final navigator = Navigator.of(context);
+    if (success && navigator.canPop()) navigator.pop();
   }
 
   @override

@@ -8,6 +8,7 @@ class AppUser {
     required this.id,
     required this.name,
     required this.phone,
+    this.isDonor = false,
   });
 
   final String id;
@@ -15,4 +16,8 @@ class AppUser {
 
   /// Always stored as 01XXXXXXXXX (see utils/phone_number.dart).
   final String phone;
+
+  /// True once the user has registered as a donor. Home hides
+  /// "Register as Donor" for donors. The full donor profile comes later.
+  final bool isDonor;
 }

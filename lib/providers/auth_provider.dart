@@ -50,4 +50,14 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  /// Logs the current user out.
+  ///
+  /// With mock data there is nothing to tell a server, so we only clear
+  /// the local state. The Supabase version will also sign out there.
+  void logOut() {
+    _currentUser = null;
+    _errorMessage = null;
+    notifyListeners(); // Screens watching us switch to the logged-out view.
+  }
 }

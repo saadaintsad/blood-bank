@@ -51,4 +51,27 @@ void main() {
 
     expect(loadingValues, [true, false]);
   });
+
+  test('the sample donor is a donor and the sample seeker is not', () async {
+    final auth = createProvider();
+
+    await auth.logIn(phone: '01700000001', password: samplePassword);
+    expect(auth.currentUser!.isDonor, isFalse);
+
+    await auth.logIn(phone: '01700000002', password: samplePassword);
+    expect(auth.currentUser!.isDonor, isTrue);
+  });
+
+  test('logOut clears the user and notifies listeners', () async {
+    final auth = createProvider();
+    await auth.logIn(phone: '01700000001', password: samplePassword);
+
+    var notified = false;
+    auth.addListener(() => notified = true);
+    auth.logOut();
+
+    expect(auth.isLoggedIn, isFalse);
+    expect(auth.currentUser, isNull);
+    expect(notified, isTrue);
+  });
 }

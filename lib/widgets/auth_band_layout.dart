@@ -47,8 +47,9 @@ class AuthBandLayout extends StatelessWidget {
                     Text(
                       AppStrings.tagline,
                       textAlign: TextAlign.center,
-                      style: textTheme.bodyMedium
-                          ?.copyWith(color: AppColors.primarySoft),
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: AppColors.primarySoft,
+                      ),
                     ),
                     const SizedBox(height: AppSpacing.xl),
                     RaisedCard(
@@ -67,9 +68,7 @@ class AuthBandLayout extends StatelessWidget {
             // drawn last so it sits on top. Only shown when there is a
             // screen to go back to.
             if (Navigator.canPop(context))
-              const SafeArea(
-                child: BackButton(color: AppColors.onPrimary),
-              ),
+              const SafeArea(child: BackButton(color: AppColors.onPrimary)),
           ],
         ),
       ),

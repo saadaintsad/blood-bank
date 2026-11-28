@@ -116,8 +116,9 @@ class _RegisteringAsCard extends StatelessWidget {
               foregroundColor: AppColors.primaryDark,
               child: Text(
                 user.name.isEmpty ? '?' : user.name[0].toUpperCase(),
-                style: textTheme.titleMedium
-                    ?.copyWith(color: AppColors.primaryDark),
+                style: textTheme.titleMedium?.copyWith(
+                  color: AppColors.primaryDark,
+                ),
               ),
             ),
             const SizedBox(width: AppSpacing.md),

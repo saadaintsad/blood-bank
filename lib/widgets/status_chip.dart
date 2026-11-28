@@ -25,26 +25,30 @@ class StatusChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Pick the icon and colours for this status.
-    final (IconData icon, Color iconColor, Color textColor, Color background) =
-        switch (status) {
+    final (
+      IconData icon,
+      Color iconColor,
+      Color textColor,
+      Color background,
+    ) = switch (status) {
       DonorStatus.available => (
-          Icons.check_circle,
-          AppColors.statusAvailable,
-          AppColors.statusAvailable,
-          AppColors.statusAvailableSoft,
-        ),
+        Icons.check_circle,
+        AppColors.statusAvailable,
+        AppColors.statusAvailable,
+        AppColors.statusAvailableSoft,
+      ),
       DonorStatus.recentlyDonated => (
-          Icons.schedule,
-          AppColors.statusRecentlyDonated,
-          AppColors.statusRecentlyDonatedText,
-          AppColors.statusRecentlyDonatedSoft,
-        ),
+        Icons.schedule,
+        AppColors.statusRecentlyDonated,
+        AppColors.statusRecentlyDonatedText,
+        AppColors.statusRecentlyDonatedSoft,
+      ),
       DonorStatus.notAvailable => (
-          Icons.do_not_disturb_on,
-          AppColors.statusNotAvailable,
-          AppColors.ink,
-          AppColors.statusNotAvailableSoft,
-        ),
+        Icons.do_not_disturb_on,
+        AppColors.statusNotAvailable,
+        AppColors.ink,
+        AppColors.statusNotAvailableSoft,
+      ),
     };
 
     return Container(
@@ -63,9 +67,7 @@ class StatusChip extends StatelessWidget {
           Flexible(
             child: Text(
               label ?? status.label,
-              style: Theme.of(context)
-                  .textTheme
-                  .labelMedium
+              style: Theme.of(context).textTheme.labelMedium
                   ?.copyWith(color: textColor),
             ),
           ),

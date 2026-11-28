@@ -1,6 +1,7 @@
 import '../../models/blood_request.dart';
 import '../../models/donor.dart';
 import '../../models/user.dart';
+import '../../utils/request_rules.dart';
 import 'sample_donors.dart';
 import 'sample_requests.dart';
 import 'sample_users.dart';
@@ -16,7 +17,12 @@ class MockStore {
   ///
   /// Sample dates count back from [today] (default: the real today).
   /// Tests pass a fixed date so their results never change.
-  MockStore({DateTime? today}) : today = today ?? DateTime.now() {
+  ///
+  /// [now] is the clock time used for request expiry. It defaults to
+  /// [today] when a test fixes [today], otherwise to the real time.
+  MockStore({DateTime? today, DateTime? now})
+    : today = today ?? DateTime.now(),
+      _fixedNow = now ?? today {
     for (final user in [...sampleUsers, ...sampleDonorUsers]) {
       usersByPhone[user.phone] = user;
       passwordsByPhone[user.phone] = samplePassword;
@@ -37,6 +43,12 @@ class MockStore {
   /// Yellow and for how many more days.
   final DateTime today;
 
+  final DateTime? _fixedNow;
+
+  /// The current time. Read fresh each time in the app, so a request
+  /// expires even while the app stays open.
+  DateTime get now => _fixedNow ?? DateTime.now();
+
   /// Accounts, looked up by their 01XXXXXXXXX number.
   final Map<String, AppUser> usersByPhone = {};
 
@@ -51,9 +63,13 @@ class MockStore {
   final Map<String, BloodRequest> requestsById = {};
 
   int _nextUserNumber = sampleUsers.length + 1;
+  int _nextRequestNumber = 100;
 
   /// A new unique id, like 'user-4'.
   String createUserId() => 'user-${_nextUserNumber++}';
+
+  /// A new unique request id, like 'request-100'.
+  String createRequestId() => 'request-${_nextRequestNumber++}';
 
   /// The account with this [id], or null. Accounts are stored by phone,
   /// so this looks through them all; fine for a few dozen sample users.
@@ -64,9 +80,14 @@ class MockStore {
     return null;
   }
 
-  /// True when [userId] has at least one open blood request.
-  bool hasOpenRequest(String userId) {
+  /// [userId]'s requests that are Open right now. Expired ones don't
+  /// count (see isLive in utils/request_rules.dart).
+  List<BloodRequest> liveRequestsOf(String userId) {
     return requestsById.values
-        .any((request) => request.ownerId == userId && request.isOpen);
+        .where((request) => request.ownerId == userId && isLive(request, now))
+        .toList();
   }
+
+  /// True when [userId] has at least one open blood request.
+  bool hasOpenRequest(String userId) => liveRequestsOf(userId).isNotEmpty;
 }

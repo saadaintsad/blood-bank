@@ -19,20 +19,22 @@ void main() {
   }
 
   DonorProfile profileFor(String userId) => DonorProfile(
-        userId: userId,
-        bloodGroup: 'A-',
-        gender: Gender.male,
-        dateOfBirth: DateTime(1995, 6, 1),
-        district: 'Dhaka',
-        area: 'Rampura',
-        status: DonorStatus.available,
-      );
+    userId: userId,
+    bloodGroup: 'A-',
+    gender: Gender.male,
+    dateOfBirth: DateTime(1995, 6, 1),
+    district: 'Dhaka',
+    area: 'Rampura',
+    status: DonorStatus.available,
+  );
 
   test('logs in with a sample account', () async {
     final auth = createProvider();
 
-    final success =
-        await auth.logIn(phone: '01700000001', password: samplePassword);
+    final success = await auth.logIn(
+      phone: '01700000001',
+      password: samplePassword,
+    );
 
     expect(success, isTrue);
     expect(auth.isLoggedIn, isTrue);
@@ -43,8 +45,10 @@ void main() {
   test('rejects a wrong password', () async {
     final auth = createProvider();
 
-    final success =
-        await auth.logIn(phone: '01700000001', password: 'wrong-pass');
+    final success = await auth.logIn(
+      phone: '01700000001',
+      password: 'wrong-pass',
+    );
 
     expect(success, isFalse);
     expect(auth.isLoggedIn, isFalse);
@@ -54,8 +58,10 @@ void main() {
   test('rejects an unknown number', () async {
     final auth = createProvider();
 
-    final success =
-        await auth.logIn(phone: '01999999999', password: samplePassword);
+    final success = await auth.logIn(
+      phone: '01999999999',
+      password: samplePassword,
+    );
 
     expect(success, isFalse);
     expect(auth.errorMessage, isNotNull);
@@ -118,8 +124,10 @@ void main() {
     );
     auth.logOut();
 
-    final success =
-        await auth.logIn(phone: '01800000009', password: 'secret123');
+    final success = await auth.logIn(
+      phone: '01800000009',
+      password: 'secret123',
+    );
 
     expect(success, isTrue);
     expect(auth.currentUser!.name, 'Test Seeker');
@@ -139,20 +147,22 @@ void main() {
     expect(auth.errorMessage, contains('already exists'));
   });
 
-  test('registerDonor turns a seeker into a donor, even after re-login',
-      () async {
-    final auth = createProvider();
-    await auth.logIn(phone: '01700000001', password: samplePassword);
+  test(
+    'registerDonor turns a seeker into a donor, even after re-login',
+    () async {
+      final auth = createProvider();
+      await auth.logIn(phone: '01700000001', password: samplePassword);
 
-    final success = await auth.registerDonor(profileFor('user-1'));
-    expect(success, isTrue);
-    expect(auth.currentUser!.isDonor, isTrue);
+      final success = await auth.registerDonor(profileFor('user-1'));
+      expect(success, isTrue);
+      expect(auth.currentUser!.isDonor, isTrue);
 
-    // The store remembers the profile, so logging in again keeps it.
-    auth.logOut();
-    await auth.logIn(phone: '01700000001', password: samplePassword);
-    expect(auth.currentUser!.isDonor, isTrue);
-  });
+      // The store remembers the profile, so logging in again keeps it.
+      auth.logOut();
+      await auth.logIn(phone: '01700000001', password: samplePassword);
+      expect(auth.currentUser!.isDonor, isTrue);
+    },
+  );
 
   test('registerDonor refuses a user who is already a donor', () async {
     final auth = createProvider();

@@ -40,10 +40,7 @@ class SectionHeader extends StatelessWidget {
             // Mark as a heading so screen readers can jump between sections.
             child: Semantics(
               header: true,
-              child: Text(
-                title,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+              child: Text(title, style: Theme.of(context).textTheme.titleLarge),
             ),
           ),
           if (hasAction)

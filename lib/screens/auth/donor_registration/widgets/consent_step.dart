@@ -34,7 +34,10 @@ class ConsentStep extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.visibility_outlined, color: AppColors.primaryDark),
+              const Icon(
+                Icons.visibility_outlined,
+                color: AppColors.primaryDark,
+              ),
               const SizedBox(width: AppSpacing.sm + 4),
               Expanded(
                 child: Text(donorConsentText, style: textTheme.bodyMedium),

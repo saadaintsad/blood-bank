@@ -29,14 +29,23 @@ class AppTextStyles {
       // Normal reading text.
       bodyLarge: _archivo(16, FontWeight.w400, height: 1.5),
       bodyMedium: _archivo(14, FontWeight.w400, height: 1.5),
-      bodySmall: _archivo(12, FontWeight.w400,
-          height: 1.4, color: AppColors.inkMuted),
+      bodySmall: _archivo(
+        12,
+        FontWeight.w400,
+        height: 1.4,
+        color: AppColors.inkMuted,
+      ),
 
       // Buttons, chips, field labels and small captions.
       labelLarge: _archivo(15, FontWeight.w600, height: 1.2),
       labelMedium: _archivo(13, FontWeight.w600, height: 1.2),
-      labelSmall: _archivo(11, FontWeight.w600,
-          height: 1.2, letterSpacing: 0.6, color: AppColors.inkMuted),
+      labelSmall: _archivo(
+        11,
+        FontWeight.w600,
+        height: 1.2,
+        letterSpacing: 0.6,
+        color: AppColors.inkMuted,
+      ),
     );
   }
 

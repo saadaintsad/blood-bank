@@ -23,6 +23,13 @@ class AppRoutes {
   /// One donor's details. Pass a DonorDetailsArgs as `arguments`.
   static const String donorDetails = '/donor-details';
 
+  /// The Post Request form. Pass a PostRequestOrigin (utils/navigation.dart)
+  /// as `arguments`; it decides where the user goes after posting.
+  static const String postRequest = '/post-request';
+
+  /// The logged-in user's own requests, with Mark Fulfilled and Cancel.
+  static const String myRequests = '/my-requests';
+
   /// Placeholder for screens that are not built yet. Pass the feature
   /// name as `arguments`, e.g. pushNamed(comingSoon, arguments: 'Find Blood').
   static const String comingSoon = '/coming-soon';

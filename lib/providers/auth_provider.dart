@@ -37,8 +37,10 @@ class AuthProvider extends ChangeNotifier {
   /// [phone] must already be normalized to 01XXXXXXXXX.
   Future<bool> logIn({required String phone, required String password}) {
     return _run(() async {
-      _currentUser =
-          await _authRepository.logIn(phone: phone, password: password);
+      _currentUser = await _authRepository.logIn(
+        phone: phone,
+        password: password,
+      );
     });
   }
 

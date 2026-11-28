@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
 import '../../theme/spacing.dart';
+import '../../utils/app_routes.dart';
 import '../../utils/constants.dart';
 import '../../widgets/app_logo.dart';
 import '../../widgets/home_footer.dart';
@@ -28,6 +29,14 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const AppLogo(onDark: true),
         actions: [
+          // Temporary: My Requests lives here until the Dashboard exists.
+          if (isLoggedIn)
+            IconButton(
+              icon: const Icon(Icons.assignment_outlined),
+              tooltip: 'My Requests',
+              onPressed: () =>
+                  Navigator.pushNamed(context, AppRoutes.myRequests),
+            ),
           // Temporary: log out lives here until the Profile screen exists.
           if (isLoggedIn)
             IconButton(

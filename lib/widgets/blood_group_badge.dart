@@ -42,17 +42,17 @@ class BloodGroupBadge extends StatelessWidget {
 
     final badge = switch (size) {
       BloodGroupBadgeSize.small => _StampBox(
-          dimension: 40,
-          fontSize: 15,
-          borderWidth: 1.5,
-          text: displayText,
-        ),
+        dimension: 40,
+        fontSize: 15,
+        borderWidth: 1.5,
+        text: displayText,
+      ),
       BloodGroupBadgeSize.medium => _StampBox(
-          dimension: 56,
-          fontSize: 20,
-          borderWidth: 2,
-          text: displayText,
-        ),
+        dimension: 56,
+        fontSize: 20,
+        borderWidth: 2,
+        text: displayText,
+      ),
       BloodGroupBadgeSize.large => _buildLargeStamp(displayText),
     };
 

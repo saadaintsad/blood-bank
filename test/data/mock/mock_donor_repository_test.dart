@@ -26,28 +26,30 @@ void main() {
     return repository.searchDonors(filters, viewerId: viewerId);
   }
 
-  List<String> names(List<DonorSearchResult> results) =>
-      [for (final r in results) r.name];
+  List<String> names(List<DonorSearchResult> results) => [
+    for (final r in results) r.name,
+  ];
 
   group('searchDonors', () {
-    test('B+ in Dhaka lists exact, then compatible, Green before Yellow',
-        () async {
-      final results = await search(
-        const DonorSearchFilters(bloodGroup: 'B+', district: 'Dhaka'),
-      );
+    test(
+      'B+ in Dhaka lists exact, then compatible, Green before Yellow',
+      () async {
+        final results = await search(
+          const DonorSearchFilters(bloodGroup: 'B+', district: 'Dhaka'),
+        );
 
-      expect(names(results), [
-        // Exact B+: Green A–Z, then Yellow.
-        'Karim', 'Mahin', 'Tanvir',
-        // Compatible (B−, O+, O−): Green A–Z, then Yellow A–Z.
-        'Mitu', 'Nusrat', 'Rakib', 'Sample Donor',
-        'Joya', 'Nayeem', 'Riya',
-      ]);
-    });
+        expect(names(results), [
+          // Exact B+: Green A–Z, then Yellow.
+          'Karim', 'Mahin', 'Tanvir',
+          // Compatible (B−, O+, O−): Green A–Z, then Yellow A–Z.
+          'Mitu', 'Nusrat', 'Rakib', 'Sample Donor',
+          'Joya', 'Nayeem', 'Riya',
+        ]);
+      },
+    );
 
     test('labels compatible donors and counts Yellow days', () async {
-      final results =
-          await search(const DonorSearchFilters(bloodGroup: 'B+'));
+      final results = await search(const DonorSearchFilters(bloodGroup: 'B+'));
       final tanvir = results.firstWhere((r) => r.name == 'Tanvir');
       final mitu = results.firstWhere((r) => r.name == 'Mitu');
 
@@ -60,8 +62,7 @@ void main() {
 
     test('hides Red donors', () async {
       // Shuvo (O+) and Tania (A+) are Red; AB+ can receive from both.
-      final results =
-          await search(const DonorSearchFilters(bloodGroup: 'AB+'));
+      final results = await search(const DonorSearchFilters(bloodGroup: 'AB+'));
       expect(names(results), isNot(contains('Shuvo')));
       expect(names(results), isNot(contains('Tania')));
       expect(
@@ -71,8 +72,7 @@ void main() {
     });
 
     test('hides groups that cannot give to the patient', () async {
-      final results =
-          await search(const DonorSearchFilters(bloodGroup: 'B+'));
+      final results = await search(const DonorSearchFilters(bloodGroup: 'B+'));
       expect(names(results), isNot(contains('Arif'))); // A+
       expect(names(results), isNot(contains('Imran'))); // AB−
     });
@@ -114,29 +114,32 @@ void main() {
         const DonorSearchFilters(bloodGroup: 'B+', onlyAvailable: true),
       );
       expect(names(results), isNot(contains('Tanvir')));
-      expect(
-        results.every((r) => r.status == DonorStatus.available),
-        isTrue,
-      );
+      expect(results.every((r) => r.status == DonorStatus.available), isTrue);
     });
   });
 
   group('getDonorPhone', () {
     test('is hidden from a viewer without an open request', () async {
-      final phone =
-          await repository.getDonorPhone('donor-1', viewerId: seekerId);
+      final phone = await repository.getDonorPhone(
+        'donor-1',
+        viewerId: seekerId,
+      );
       expect(phone, isNull);
     });
 
     test('is shown to a viewer with an open request', () async {
-      final phone =
-          await repository.getDonorPhone('donor-1', viewerId: requesterId);
+      final phone = await repository.getDonorPhone(
+        'donor-1',
+        viewerId: requesterId,
+      );
       expect(phone, '01700000101');
     });
 
     test('stays hidden for a Red donor, even with a request', () async {
-      final phone =
-          await repository.getDonorPhone('donor-13', viewerId: requesterId);
+      final phone = await repository.getDonorPhone(
+        'donor-13',
+        viewerId: requesterId,
+      );
       expect(phone, isNull);
     });
   });

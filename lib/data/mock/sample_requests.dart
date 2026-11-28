@@ -19,6 +19,7 @@ List<BloodRequest> sampleRequests(DateTime today) {
       district: 'Dhaka',
       requiredDate: DateTime(today.year, today.month, today.day + 1),
       contactPhone: '01700000003',
+      createdAt: DateTime(today.year, today.month, today.day),
       notes: 'Sample request for testing.',
     ),
   ];

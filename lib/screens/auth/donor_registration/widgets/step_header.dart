@@ -33,10 +33,7 @@ class StepHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'STEP $stepNumber OF $stepCount',
-            style: textTheme.labelSmall,
-          ),
+          Text('STEP $stepNumber OF $stepCount', style: textTheme.labelSmall),
           const SizedBox(height: AppSpacing.xs),
           Text(title, style: textTheme.titleLarge),
           const SizedBox(height: AppSpacing.sm + 4),

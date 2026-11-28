@@ -22,10 +22,11 @@ class DonationStep extends StatelessWidget {
     final registration = context.watch<DonorRegistrationProvider>();
     final textTheme = Theme.of(context).textTheme;
     final today = registration.today;
-    final error =
-        registration.showErrors ? registration.lastDonationError : null;
-    final hasAnswered = registration.lastDonationDate != null ||
-        registration.neverDonated;
+    final error = registration.showErrors
+        ? registration.lastDonationError
+        : null;
+    final hasAnswered =
+        registration.lastDonationDate != null || registration.neverDonated;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -102,9 +103,9 @@ class _StartingStatusCard extends StatelessWidget {
     final explanation = status == DonorStatus.available
         ? 'You will appear in donor search straight away.'
         : 'Donors wait ${waitingPeriodDays(gender)} days between '
-            'donations. You will still appear in search, and turn '
-            'Available automatically on '
-            '${formatDate(nextEligibleDate(registration.lastDonationDate!, gender))}.';
+              'donations. You will still appear in search, and turn '
+              'Available automatically on '
+              '${formatDate(nextEligibleDate(registration.lastDonationDate!, gender))}.';
 
     return Card(
       child: Padding(
@@ -114,10 +115,7 @@ class _StartingStatusCard extends StatelessWidget {
           children: [
             Text('You will start as', style: textTheme.bodySmall),
             const SizedBox(height: AppSpacing.sm),
-            StatusChip(
-              status: status,
-              label: registration.startingStatusLabel,
-            ),
+            StatusChip(status: status, label: registration.startingStatusLabel),
             const SizedBox(height: AppSpacing.sm),
             Text(explanation, style: textTheme.bodyMedium),
           ],

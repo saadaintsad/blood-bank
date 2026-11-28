@@ -3,11 +3,11 @@ import 'package:provider/provider.dart';
 
 import '../../../models/donor_search_result.dart';
 import '../../../providers/donor_search_provider.dart';
-import '../../../theme/colors.dart';
 import '../../../theme/spacing.dart';
 import '../../../utils/app_routes.dart';
 import '../../../widgets/app_button.dart';
 import '../../../widgets/donor_card.dart';
+import '../../../widgets/message_panel.dart';
 
 /// The lower half of Find Blood. It shows one of five states: a hint
 /// before the first search, loading, an error, "no donors", or the list.
@@ -39,7 +39,7 @@ class SearchResults extends StatelessWidget {
 
     final error = search.errorMessage;
     if (error != null) {
-      return _MessagePanel(
+      return MessagePanel(
         icon: Icons.cloud_off_outlined,
         title: error,
         action: AppButton(
@@ -52,7 +52,7 @@ class SearchResults extends StatelessWidget {
     }
 
     if (!search.hasSearched) {
-      return const _MessagePanel(
+      return const MessagePanel(
         icon: Icons.bloodtype_outlined,
         title: "Choose the patient's blood group",
         message: 'Then press Search to see donors who can give.',
@@ -61,10 +61,11 @@ class SearchResults extends StatelessWidget {
 
     final results = search.results;
     if (results.isEmpty) {
-      return const _MessagePanel(
+      return const MessagePanel(
         icon: Icons.person_off_outlined,
         title: 'No donors found',
-        message: 'Try another district, clear the name, or turn off '
+        message:
+            'Try another district, clear the name, or turn off '
             '"Only available donors".',
       );
     }
@@ -87,50 +88,6 @@ class SearchResults extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm + 4),
         ],
       ],
-    );
-  }
-}
-
-/// A centred icon, title, optional message and optional button. Used for
-/// the hint, empty and error states.
-class _MessagePanel extends StatelessWidget {
-  const _MessagePanel({
-    required this.icon,
-    required this.title,
-    this.message,
-    this.action,
-  });
-
-  final IconData icon;
-  final String title;
-  final String? message;
-  final Widget? action;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-      child: Column(
-        children: [
-          Icon(icon, size: AppSpacing.xl + 8, color: AppColors.inkMuted),
-          const SizedBox(height: AppSpacing.sm + 4),
-          Text(title, textAlign: TextAlign.center, style: textTheme.titleMedium),
-          if (message != null) ...[
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              message!,
-              textAlign: TextAlign.center,
-              style: textTheme.bodyMedium?.copyWith(color: AppColors.inkMuted),
-            ),
-          ],
-          if (action != null) ...[
-            const SizedBox(height: AppSpacing.md),
-            action!,
-          ],
-        ],
-      ),
     );
   }
 }

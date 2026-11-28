@@ -14,12 +14,7 @@ import 'status_chip.dart';
 /// gender and status. Pass [phone] only when the viewer may see it; then
 /// the number and Call / SMS buttons appear too.
 class DonorCard extends StatelessWidget {
-  const DonorCard({
-    super.key,
-    required this.donor,
-    this.phone,
-    this.onTap,
-  });
+  const DonorCard({super.key, required this.donor, this.phone, this.onTap});
 
   final DonorSearchResult donor;
 
@@ -59,8 +54,9 @@ class DonorCard extends StatelessWidget {
                         Text(
                           '${donor.area}, ${donor.district} · '
                           '${donor.gender.label}',
-                          style: textTheme.bodyMedium
-                              ?.copyWith(color: AppColors.inkMuted),
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: AppColors.inkMuted,
+                          ),
                         ),
                         const SizedBox(height: AppSpacing.sm),
                         // Wrap moves the chips to a new line on narrow
@@ -88,8 +84,11 @@ class DonorCard extends StatelessWidget {
                 const SizedBox(height: AppSpacing.sm + 4),
                 Row(
                   children: [
-                    const Icon(Icons.phone_outlined,
-                        size: 18, color: AppColors.inkMuted),
+                    const Icon(
+                      Icons.phone_outlined,
+                      size: 18,
+                      color: AppColors.inkMuted,
+                    ),
                     const SizedBox(width: AppSpacing.sm),
                     Text(phone, style: textTheme.titleSmall),
                   ],

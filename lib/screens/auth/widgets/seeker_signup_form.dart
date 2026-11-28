@@ -52,9 +52,8 @@ class _SeekerSignupFormState extends State<SeekerSignupForm> {
     final message = success
         ? 'Welcome, ${auth.currentUser!.name}. Your account is ready.'
         : auth.errorMessage!;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
 
     if (success) {
       returnHomeAfterSignUp(

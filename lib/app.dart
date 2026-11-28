@@ -9,12 +9,16 @@ import 'data/repositories/donor_repository.dart';
 import 'data/repositories/request_repository.dart';
 import 'providers/auth_provider.dart';
 import 'providers/donor_search_provider.dart';
+import 'providers/my_requests_provider.dart';
+import 'providers/post_request_provider.dart';
 import 'screens/auth/donor_registration/donor_registration_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/seeker_signup_screen.dart';
 import 'screens/coming_soon/coming_soon_screen.dart';
 import 'screens/donor/donor_details_screen.dart';
 import 'screens/home/home_screen.dart';
+import 'screens/requests/my_requests_screen.dart';
+import 'screens/requests/post_request_screen.dart';
 import 'screens/search/find_blood_screen.dart';
 import 'theme/app_theme.dart';
 import 'utils/app_routes.dart';
@@ -80,14 +84,39 @@ class _ReddifyAppState extends State<ReddifyApp> {
           // start fresh each visit. `..load()` (a cascade) starts loading
           // straight after creating it.
           AppRoutes.findBlood: (context) => ChangeNotifierProvider(
-                create: (context) => DonorSearchProvider(
-                  context.read<DonorRepository>(),
-                  context.read<RequestRepository>(),
-                  viewerId: context.read<AuthProvider>().currentUser?.id ?? '',
-                )..load(),
-                child: const FindBloodScreen(),
-              ),
+            create: (context) => DonorSearchProvider(
+              context.read<DonorRepository>(),
+              context.read<RequestRepository>(),
+              viewerId: context.read<AuthProvider>().currentUser?.id ?? '',
+            )..load(),
+            child: const FindBloodScreen(),
+          ),
           AppRoutes.donorDetails: (_) => const DonorDetailsScreen(),
+          // Post Request and My Requests also get fresh providers per visit.
+          // They need a logged-in user; if there is none (e.g. someone
+          // typed the address in Chrome), show Login instead.
+          AppRoutes.postRequest: (context) {
+            final user = context.read<AuthProvider>().currentUser;
+            if (user == null) return const LoginScreen();
+            return ChangeNotifierProvider(
+              create: (context) => PostRequestProvider(
+                context.read<RequestRepository>(),
+                owner: user,
+              )..load(),
+              child: const PostRequestScreen(),
+            );
+          },
+          AppRoutes.myRequests: (context) {
+            final user = context.read<AuthProvider>().currentUser;
+            if (user == null) return const LoginScreen();
+            return ChangeNotifierProvider(
+              create: (context) => MyRequestsProvider(
+                context.read<RequestRepository>(),
+                userId: user.id,
+              )..load(),
+              child: const MyRequestsScreen(),
+            );
+          },
           AppRoutes.comingSoon: (_) => const ComingSoonScreen(),
         },
       ),

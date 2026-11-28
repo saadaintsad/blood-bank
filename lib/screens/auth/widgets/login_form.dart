@@ -60,9 +60,8 @@ class _LoginFormState extends State<LoginForm> {
     final message = success
         ? 'Logged in as ${auth.currentUser!.name} (demo account)'
         : auth.errorMessage!;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
 
     // Go back to the screen that opened Login (usually Home), which now
     // shows the logged-in version. The snackbar stays visible because it

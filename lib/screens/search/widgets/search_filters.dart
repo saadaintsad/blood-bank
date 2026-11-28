@@ -96,8 +96,7 @@ class SearchFilters extends StatelessWidget {
           selected: search.area.isEmpty ? null : search.area,
           hint: 'Any area',
           icon: Icons.place_outlined,
-          onSelected: (value) =>
-              search.setArea(value == _anyArea ? '' : value),
+          onSelected: (value) => search.setArea(value == _anyArea ? '' : value),
         ),
       );
     }

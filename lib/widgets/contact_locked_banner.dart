@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/colors.dart';
 import '../theme/spacing.dart';
 import '../utils/app_routes.dart';
+import '../utils/navigation.dart';
 import 'app_button.dart';
 
 /// Explains why phone numbers are hidden, with a way to fix it.
@@ -43,11 +44,12 @@ class ContactLockedBanner extends StatelessWidget {
             label: 'Post Request',
             icon: Icons.add,
             variant: AppButtonVariant.outlined,
-            // Post Request is not built yet.
+            // After posting, the user comes back to a fresh Find Blood
+            // that shows numbers (see leavePostRequest).
             onPressed: () => Navigator.pushNamed(
               context,
-              AppRoutes.comingSoon,
-              arguments: 'Post Request',
+              AppRoutes.postRequest,
+              arguments: PostRequestOrigin.contactBanner,
             ),
           ),
         ],

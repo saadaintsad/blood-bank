@@ -74,6 +74,14 @@ class AppColors {
   static const Color statusNotAvailableSoft = Color(0xFFFDEBEA);
 
   // ---------------------------------------------------------------------------
+  // Neutral (closed requests)
+  // ---------------------------------------------------------------------------
+
+  /// Soft grey background for things that are over, like a Cancelled or
+  /// Expired request. Its text and icon use [inkMuted].
+  static const Color neutralSoft = Color(0xFFECE8E2);
+
+  // ---------------------------------------------------------------------------
   // Form errors
   // ---------------------------------------------------------------------------
 

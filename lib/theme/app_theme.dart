@@ -49,8 +49,9 @@ class AppTheme {
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
-        titleTextStyle:
-            textTheme.titleLarge?.copyWith(color: AppColors.onPrimary),
+        titleTextStyle: textTheme.titleLarge?.copyWith(
+          color: AppColors.onPrimary,
+        ),
       ),
 
       cardTheme: CardThemeData(
@@ -153,8 +154,7 @@ class AppTheme {
 
       snackBarTheme: SnackBarThemeData(
         backgroundColor: AppColors.ink,
-        contentTextStyle:
-            textTheme.bodyMedium?.copyWith(color: Colors.white),
+        contentTextStyle: textTheme.bodyMedium?.copyWith(color: Colors.white),
         behavior: SnackBarBehavior.floating,
       ),
 

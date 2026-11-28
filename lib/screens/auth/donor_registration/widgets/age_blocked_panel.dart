@@ -33,14 +33,18 @@ class AgeBlockedPanel extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final reason = age < minDonorAge
         ? 'You are $age, so you can register as a donor once you turn '
-            '$minDonorAge.'
+              '$minDonorAge.'
         : 'You are $age, which is above the donor age limit of $maxDonorAge.';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const SizedBox(height: AppSpacing.lg),
-        const Icon(Icons.favorite_border, size: AppSpacing.xxl, color: AppColors.primary),
+        const Icon(
+          Icons.favorite_border,
+          size: AppSpacing.xxl,
+          color: AppColors.primary,
+        ),
         const SizedBox(height: AppSpacing.md),
         Text(
           'Donors must be $minDonorAge to $maxDonorAge years old',

@@ -23,8 +23,9 @@ DonorSearchResult result(
   );
 }
 
-List<String> names(List<DonorSearchResult> results) =>
-    [for (final r in results) r.name];
+List<String> names(List<DonorSearchResult> results) => [
+  for (final r in results) r.name,
+];
 
 void main() {
   const yellow = DonorStatus.recentlyDonated;
@@ -38,32 +39,26 @@ void main() {
   });
 
   test('exact match wins even over same area and Green', () {
-    final sorted = sortSearchResults(
-      [
-        result('Compatible here', exact: false, area: 'Badda'),
-        result('Exact elsewhere', area: 'Uttara', status: yellow),
-      ],
-      preferredArea: 'Badda',
-    );
+    final sorted = sortSearchResults([
+      result('Compatible here', exact: false, area: 'Badda'),
+      result('Exact elsewhere', area: 'Uttara', status: yellow),
+    ], preferredArea: 'Badda');
     expect(names(sorted), ['Exact elsewhere', 'Compatible here']);
   });
 
   test('same area comes before the rest of the district', () {
-    final sorted = sortSearchResults(
-      [result('Away', area: 'Uttara'), result('Near', area: 'Badda')],
-      preferredArea: 'Badda',
-    );
+    final sorted = sortSearchResults([
+      result('Away', area: 'Uttara'),
+      result('Near', area: 'Badda'),
+    ], preferredArea: 'Badda');
     expect(names(sorted), ['Near', 'Away']);
   });
 
   test('same area wins over Green', () {
-    final sorted = sortSearchResults(
-      [
-        result('Green away', area: 'Uttara'),
-        result('Yellow near', area: 'Badda', status: yellow),
-      ],
-      preferredArea: 'Badda',
-    );
+    final sorted = sortSearchResults([
+      result('Green away', area: 'Uttara'),
+      result('Yellow near', area: 'Badda', status: yellow),
+    ], preferredArea: 'Badda');
     expect(names(sorted), ['Yellow near', 'Green away']);
   });
 

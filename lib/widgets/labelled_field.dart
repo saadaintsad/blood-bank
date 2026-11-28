@@ -45,8 +45,9 @@ class LabelledField extends StatelessWidget {
               if (note != null)
                 TextSpan(
                   text: '  $note',
-                  style: textTheme.bodySmall
-                      ?.copyWith(color: AppColors.inkMuted),
+                  style: textTheme.bodySmall?.copyWith(
+                    color: AppColors.inkMuted,
+                  ),
                 ),
             ],
           ),

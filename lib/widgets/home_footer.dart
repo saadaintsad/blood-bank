@@ -48,7 +48,10 @@ class HomeFooter extends StatelessWidget {
             children: [
               _SocialButton(icon: Icons.facebook, name: 'Facebook'),
               _SocialButton(icon: Icons.camera_alt_outlined, name: 'Instagram'),
-              _SocialButton(icon: Icons.smart_display_outlined, name: 'YouTube'),
+              _SocialButton(
+                icon: Icons.smart_display_outlined,
+                name: 'YouTube',
+              ),
             ],
           ),
           const SizedBox(height: AppSpacing.md),
@@ -81,9 +84,7 @@ class _ContactRow extends StatelessWidget {
           const SizedBox(width: 12),
           Text(
             text,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
+            style: Theme.of(context).textTheme.bodyMedium
                 ?.copyWith(color: Colors.white),
           ),
         ],

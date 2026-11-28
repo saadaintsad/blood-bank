@@ -16,8 +16,7 @@ const List<InfoItem> howItWorksSteps = [
   InfoItem(
     icon: Icons.search,
     title: 'Find donors',
-    description:
-        'Search by blood group and district to see donors who are ready to give.',
+    description: 'Search by blood group and district to see donors who are ready to give.',
   ),
   InfoItem(
     icon: Icons.call_outlined,
@@ -28,8 +27,7 @@ const List<InfoItem> howItWorksSteps = [
   InfoItem(
     icon: Icons.favorite_outline,
     title: 'Save lives',
-    description:
-        'The donor gives blood at the hospital, and a patient gets what they need.',
+    description: 'The donor gives blood at the hospital, and a patient gets what they need.',
   ),
 ];
 
@@ -38,7 +36,8 @@ const List<InfoItem> trustPoints = [
   InfoItem(
     icon: Icons.map_outlined,
     title: 'All 64 districts',
-    description: 'Look for donors anywhere in Bangladesh, close to the patient.',
+    description:
+        'Look for donors anywhere in Bangladesh, close to the patient.',
   ),
   InfoItem(
     icon: Icons.phone_in_talk_outlined,

@@ -150,22 +150,24 @@ void main() {
     expect(newUserForm().receiveAlerts, isTrue);
   });
 
-  test('submit creates the account and donor profile, which can log in',
-      () async {
-    final auth = createAuth();
-    final form = newUserForm();
-    fillAllSteps(form);
-    form.setConsentGiven(true);
+  test(
+    'submit creates the account and donor profile, which can log in',
+    () async {
+      final auth = createAuth();
+      final form = newUserForm();
+      fillAllSteps(form);
+      form.setConsentGiven(true);
 
-    final success = await form.submit(auth);
-    expect(success, isTrue);
-    expect(auth.currentUser!.phone, '01800000009'); // normalized
-    expect(auth.currentUser!.isDonor, isTrue);
+      final success = await form.submit(auth);
+      expect(success, isTrue);
+      expect(auth.currentUser!.phone, '01800000009'); // normalized
+      expect(auth.currentUser!.isDonor, isTrue);
 
-    auth.logOut();
-    await auth.logIn(phone: '01800000009', password: 'secret123');
-    expect(auth.currentUser!.isDonor, isTrue);
-  });
+      auth.logOut();
+      await auth.logIn(phone: '01800000009', password: 'secret123');
+      expect(auth.currentUser!.isDonor, isTrue);
+    },
+  );
 
   test('submit with a used number goes back to the account step', () async {
     final auth = createAuth();
@@ -181,8 +183,7 @@ void main() {
     expect(auth.errorMessage, contains('already exists'));
   });
 
-  test('signUpAsSeeker makes a seeker account from the account step',
-      () async {
+  test('signUpAsSeeker makes a seeker account from the account step', () async {
     final auth = createAuth();
     final form = newUserForm()
       ..name = 'Young Seeker'

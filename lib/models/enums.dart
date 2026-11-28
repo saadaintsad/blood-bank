@@ -27,7 +27,12 @@ enum DonorStatus {
 enum RequestStatus {
   open('Open'),
   fulfilled('Fulfilled'),
-  cancelled('Cancelled');
+  cancelled('Cancelled'),
+
+  /// Shown, never saved by the app: an Open request 48 hours past the end
+  /// of its required date counts as closed (utils/request_rules.dart).
+  /// The Supabase version can set it on a schedule later.
+  expired('Expired');
 
   const RequestStatus(this.label);
 

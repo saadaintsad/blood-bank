@@ -29,7 +29,8 @@ int compareSearchResults(
     if (byArea != 0) return byArea;
   }
 
-  final byStatus = _rank(a.status == DonorStatus.available) -
+  final byStatus =
+      _rank(a.status == DonorStatus.available) -
       _rank(b.status == DonorStatus.available);
   if (byStatus != 0) return byStatus;
 
@@ -43,9 +44,8 @@ List<DonorSearchResult> sortSearchResults(
   String? preferredArea,
 }) {
   // `..sort(...)` sorts the copy and returns it (the ".." is a cascade).
-  return [...results]..sort(
-      (a, b) => compareSearchResults(a, b, preferredArea: preferredArea),
-    );
+  return [...results]
+    ..sort((a, b) => compareSearchResults(a, b, preferredArea: preferredArea));
 }
 
 /// 0 when [isBetter] is true, 1 otherwise. Lower numbers sort first.

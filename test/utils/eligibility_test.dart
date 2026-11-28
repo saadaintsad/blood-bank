@@ -144,12 +144,7 @@ void main() {
 
     test('a saved Yellow turns Green once the waiting period is over', () {
       expect(
-        currentStatus(
-          DonorStatus.recentlyDonated,
-          yearAgo,
-          Gender.male,
-          today,
-        ),
+        currentStatus(DonorStatus.recentlyDonated, yearAgo, Gender.male, today),
         DonorStatus.available,
       );
     });

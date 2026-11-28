@@ -13,8 +13,10 @@ void main() {
   });
 
   test('sample accounts can still log in', () async {
-    final user =
-        await repository.logIn(phone: '01700000002', password: samplePassword);
+    final user = await repository.logIn(
+      phone: '01700000002',
+      password: samplePassword,
+    );
 
     expect(user.name, 'Sample Donor');
     expect(user.isDonor, isTrue);
@@ -26,8 +28,10 @@ void main() {
       phone: '01800000009',
       password: 'secret123',
     );
-    final loggedIn =
-        await repository.logIn(phone: '01800000009', password: 'secret123');
+    final loggedIn = await repository.logIn(
+      phone: '01800000009',
+      password: 'secret123',
+    );
 
     expect(created.name, 'Test Seeker'); // spaces trimmed
     expect(loggedIn.id, created.id);

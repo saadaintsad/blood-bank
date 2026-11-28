@@ -31,7 +31,8 @@ class FindBloodScreen extends StatelessWidget {
         children: [
           if (request != null) ...[
             _RequestNote(
-              text: 'Filled in from your request: ${request.bloodGroup} '
+              text:
+                  'Filled in from your request: ${request.bloodGroup} '
                   'in ${request.district}.',
             ),
             const SizedBox(height: AppSpacing.md),

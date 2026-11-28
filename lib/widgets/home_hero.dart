@@ -55,8 +55,9 @@ class HomeHero extends StatelessWidget {
               Text(
                 'Find voluntary donors near you by blood group and '
                 'district, and reach them in one call.',
-                style: textTheme.bodyLarge
-                    ?.copyWith(color: AppColors.primarySoft),
+                style: textTheme.bodyLarge?.copyWith(
+                  color: AppColors.primarySoft,
+                ),
               ),
             ],
           ),

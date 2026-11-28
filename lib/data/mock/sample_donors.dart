@@ -50,7 +50,9 @@ List<DonorProfile> sampleDonorProfiles(DateTime today) {
     int? donatedDaysAgo,
     bool isOnBreak = false,
   }) {
-    final lastDonation = donatedDaysAgo == null ? null : daysAgo(donatedDaysAgo);
+    final lastDonation = donatedDaysAgo == null
+        ? null
+        : daysAgo(donatedDaysAgo);
     return DonorProfile(
       userId: userId,
       bloodGroup: bloodGroup,

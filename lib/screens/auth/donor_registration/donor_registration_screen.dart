@@ -66,9 +66,8 @@ class _RegistrationBodyState extends State<_RegistrationBody> {
     final message = success
         ? 'You are registered as a donor · ${registration.startingStatusLabel}'
         : auth.errorMessage!;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
     if (success) returnHomeAfterSignUp(Navigator.of(context));
   }
 
@@ -82,9 +81,8 @@ class _RegistrationBodyState extends State<_RegistrationBody> {
     final message = success
         ? 'Welcome, ${auth.currentUser!.name}. Your account is ready.'
         : auth.errorMessage!;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
     if (success) {
       returnHomeAfterSignUp(Navigator.of(context), continueToFindBlood: true);
     }
@@ -98,8 +96,8 @@ class _RegistrationBodyState extends State<_RegistrationBody> {
     final step = registration.currentStep;
 
     // Finish stays disabled until the consent box is ticked.
-    final canGoOn = step != RegistrationStep.consent ||
-        registration.consentGiven;
+    final canGoOn =
+        step != RegistrationStep.consent || registration.consentGiven;
 
     // PopScope catches the back arrow and Android's back gesture. On
     // later steps they go back one step instead of leaving the form.

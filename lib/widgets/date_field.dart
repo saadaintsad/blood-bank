@@ -60,8 +60,9 @@ class DateField extends StatelessWidget {
       firstDate: firstDate,
       lastDate: lastDate,
       helpText: helpText,
-      initialDatePickerMode:
-          startWithYear ? DatePickerMode.year : DatePickerMode.day,
+      initialDatePickerMode: startWithYear
+          ? DatePickerMode.year
+          : DatePickerMode.day,
     );
     if (picked != null) onChanged(picked);
   }

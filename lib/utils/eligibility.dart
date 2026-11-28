@@ -36,7 +36,8 @@ DateTime dateOnly(DateTime moment) =>
 /// that are not leap years.
 int ageOn(DateTime dateOfBirth, DateTime today) {
   var age = today.year - dateOfBirth.year;
-  final hadBirthdayThisYear = today.month > dateOfBirth.month ||
+  final hadBirthdayThisYear =
+      today.month > dateOfBirth.month ||
       (today.month == dateOfBirth.month && today.day >= dateOfBirth.day);
   if (!hadBirthdayThisYear) age--;
   return age;
@@ -66,8 +67,10 @@ DateTime nextEligibleDate(DateTime lastDonation, Gender gender) {
 /// Never-donated donors ([lastDonation] is null) get 0.
 int daysUntilEligible(DateTime? lastDonation, Gender gender, DateTime today) {
   if (lastDonation == null) return 0;
-  final days =
-      nextEligibleDate(lastDonation, gender).difference(dateOnly(today)).inDays;
+  final days = nextEligibleDate(
+    lastDonation,
+    gender,
+  ).difference(dateOnly(today)).inDays;
   return days > 0 ? days : 0;
 }
 

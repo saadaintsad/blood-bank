@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../theme/spacing.dart';
 import '../../../utils/app_routes.dart';
+import '../../../utils/navigation.dart';
 import '../../../widgets/app_button.dart';
 import '../../auth/widgets/auth_switch_prompt.dart';
 
@@ -16,12 +17,6 @@ import '../../auth/widgets/auth_switch_prompt.dart';
 ///   users who are not donors yet.
 class HomeActions extends StatelessWidget {
   const HomeActions({super.key});
-
-  /// Opens the placeholder screen with [featureName] as its title.
-  /// Swap these for real routes as each screen gets built.
-  void _openComingSoon(BuildContext context, String featureName) {
-    Navigator.pushNamed(context, AppRoutes.comingSoon, arguments: featureName);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,10 +40,10 @@ class HomeActions extends StatelessWidget {
           onPressed: isLoggedIn
               ? () => Navigator.pushNamed(context, AppRoutes.findBlood)
               : () => Navigator.pushNamed(
-                    context,
-                    AppRoutes.seekerSignup,
-                    arguments: true, // continue to Find Blood afterwards
-                  ),
+                  context,
+                  AppRoutes.seekerSignup,
+                  arguments: true, // continue to Find Blood afterwards
+                ),
         ),
         if (isLoggedIn) ...[
           gap,
@@ -56,7 +51,11 @@ class HomeActions extends StatelessWidget {
             label: 'Post Request',
             icon: Icons.add,
             variant: AppButtonVariant.outlined,
-            onPressed: () => _openComingSoon(context, 'Post Request'),
+            onPressed: () => Navigator.pushNamed(
+              context,
+              AppRoutes.postRequest,
+              arguments: PostRequestOrigin.home,
+            ),
           ),
         ],
         if (showRegisterAsDonor) ...[

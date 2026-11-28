@@ -21,7 +21,11 @@ class PrivacyNote extends StatelessWidget {
         children: [
           const Padding(
             padding: EdgeInsets.only(top: 1),
-            child: Icon(Icons.lock_outline, size: 14, color: AppColors.inkMuted),
+            child: Icon(
+              Icons.lock_outline,
+              size: 14,
+              color: AppColors.inkMuted,
+            ),
           ),
           const SizedBox(width: AppSpacing.xs + 2),
           // Expanded lets long text wrap instead of overflowing.

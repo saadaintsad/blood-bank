@@ -32,6 +32,8 @@ class AppTextField extends StatefulWidget {
     this.onChanged,
     this.onSubmitted,
     this.autofillHints,
+    this.maxLines = 1,
+    this.maxLength,
   });
 
   final String label;
@@ -54,6 +56,12 @@ class AppTextField extends StatefulWidget {
   /// Lets the browser or password manager fill the field, for example
   /// `[AutofillHints.email]` or `[AutofillHints.password]`.
   final Iterable<String>? autofillHints;
+
+  /// More than 1 makes a taller box for longer text, such as notes.
+  final int maxLines;
+
+  /// When set, shows a "12/200" counter and stops typing at the limit.
+  final int? maxLength;
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();
@@ -86,6 +94,8 @@ class _AppTextFieldState extends State<AppTextField> {
           onChanged: widget.onChanged,
           onFieldSubmitted: widget.onSubmitted,
           autofillHints: widget.autofillHints,
+          maxLines: widget.maxLines,
+          maxLength: widget.maxLength,
           // Only password fields hide their text.
           obscureText: widget.isPassword && _isTextHidden,
           // Show errors as soon as the user leaves a field they touched.

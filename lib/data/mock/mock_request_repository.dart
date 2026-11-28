@@ -1,8 +1,12 @@
 import '../../models/blood_request.dart';
+import '../../models/enums.dart';
+import '../../models/new_blood_request.dart';
+import '../../utils/request_rules.dart';
 import '../repositories/request_repository.dart';
 import 'mock_store.dart';
 
-/// Reads blood requests from a [MockStore]. No network calls.
+/// Posts, reads and closes blood requests in a [MockStore]. No network
+/// calls.
 class MockRequestRepository implements RequestRepository {
   MockRequestRepository(
     this._store, {
@@ -17,11 +21,82 @@ class MockRequestRepository implements RequestRepository {
   @override
   Future<List<BloodRequest>> getOpenRequests(String userId) async {
     await Future.delayed(delay);
+    return _newestFirst(_store.liveRequestsOf(userId));
+  }
+
+  @override
+  Future<List<BloodRequest>> getMyRequests(String userId) async {
+    await Future.delayed(delay);
     final requests = _store.requestsById.values
-        .where((request) => request.ownerId == userId && request.isOpen)
+        .where((request) => request.ownerId == userId)
         .toList();
-    // Newest required date first.
-    requests.sort((a, b) => b.requiredDate.compareTo(a.requiredDate));
-    return requests;
+    return _newestFirst(requests);
+  }
+
+  @override
+  Future<BloodRequest> createRequest(NewBloodRequest draft) async {
+    await Future.delayed(delay);
+
+    // The same two checks the Supabase database will make, so the rules
+    // hold even if a screen forgets to check first.
+    if (_store.liveRequestsOf(draft.ownerId).length >= maxOpenRequests) {
+      throw const RequestException(openRequestLimitMessage);
+    }
+    final dateError = requiredDateError(draft.requiredDate, _store.now);
+    if (dateError != null) throw RequestException(dateError);
+
+    final request = BloodRequest(
+      id: _store.createRequestId(),
+      ownerId: draft.ownerId,
+      patientName: draft.patientName,
+      bloodGroup: draft.bloodGroup,
+      unitsNeeded: draft.unitsNeeded,
+      hospital: draft.hospital,
+      district: draft.district,
+      requiredDate: draft.requiredDate,
+      contactPhone: draft.contactPhone,
+      notes: draft.notes,
+      createdAt: _store.now,
+      // Live straight away: no approval step.
+      status: RequestStatus.open,
+    );
+    _store.requestsById[request.id] = request;
+    return request;
+  }
+
+  @override
+  Future<BloodRequest> closeRequest(
+    String requestId, {
+    required String userId,
+    required RequestStatus status,
+  }) async {
+    await Future.delayed(delay);
+
+    if (status != RequestStatus.fulfilled &&
+        status != RequestStatus.cancelled) {
+      throw ArgumentError(
+        'A request can only be closed as Fulfilled or '
+        'Cancelled, not ${status.label}.',
+      );
+    }
+    final request = _store.requestsById[requestId];
+    if (request == null || request.ownerId != userId) {
+      throw const RequestException(
+        'Only the person who posted a request '
+        'can close it.',
+      );
+    }
+    if (!isLive(request, _store.now)) {
+      throw const RequestException('This request is already closed.');
+    }
+
+    final closed = request.copyWith(status: status);
+    _store.requestsById[requestId] = closed;
+    return closed;
+  }
+
+  /// Sorts by the time each request was posted, newest first.
+  List<BloodRequest> _newestFirst(List<BloodRequest> requests) {
+    return requests..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 }

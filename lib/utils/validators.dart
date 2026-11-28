@@ -11,7 +11,10 @@ class Validators {
   Validators._();
 
   /// The field must not be empty (spaces alone do not count).
-  static String? requiredField(String? value, {String fieldName = 'This field'}) {
+  static String? requiredField(
+    String? value, {
+    String fieldName = 'This field',
+  }) {
     if (value == null || value.trim().isEmpty) {
       return '$fieldName is required';
     }

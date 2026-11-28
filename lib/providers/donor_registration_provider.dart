@@ -30,9 +30,9 @@ enum RegistrationStep {
 /// widget) means they survive moving back and forth between steps.
 class DonorRegistrationProvider extends ChangeNotifier {
   DonorRegistrationProvider({this.existingUser, DateTime Function()? clock})
-      // DateTime.now is passed as a function, not called, so `today` is
-      // always fresh. Tests pass their own clock to fix the date.
-      : _clock = clock ?? DateTime.now;
+    // DateTime.now is passed as a function, not called, so `today` is
+    // always fresh. Tests pass their own clock to fix the date.
+    : _clock = clock ?? DateTime.now;
 
   /// The logged-in seeker becoming a donor, or null for a brand-new user.
   final AppUser? existingUser;
@@ -95,15 +95,15 @@ class DonorRegistrationProvider extends ChangeNotifier {
   void setArea(String value) => _update(() => _area = value);
 
   void setLastDonationDate(DateTime value) => _update(() {
-        _lastDonationDate = value;
-        _neverDonated = false;
-      });
+    _lastDonationDate = value;
+    _neverDonated = false;
+  });
 
   /// Ticking "never donated" clears any date picked before.
   void setNeverDonated(bool value) => _update(() {
-        _neverDonated = value;
-        if (value) _lastDonationDate = null;
-      });
+    _neverDonated = value;
+    if (value) _lastDonationDate = null;
+  });
 
   void setReceiveAlerts(bool value) => _update(() => _receiveAlerts = value);
   void setConsentGiven(bool value) => _update(() => _consentGiven = value);
@@ -118,8 +118,8 @@ class DonorRegistrationProvider extends ChangeNotifier {
   List<RegistrationStep> get steps => isNewAccount
       ? RegistrationStep.values
       : RegistrationStep.values
-          .where((step) => step != RegistrationStep.account)
-          .toList();
+            .where((step) => step != RegistrationStep.account)
+            .toList();
 
   int _stepIndex = 0;
 
@@ -196,12 +196,14 @@ class DonorRegistrationProvider extends ChangeNotifier {
 
   bool get isCurrentStepValid {
     return switch (currentStep) {
-      RegistrationStep.account => Validators.requiredField(name) == null &&
-          Validators.phone(phone) == null &&
-          Validators.password(password) == null,
-      RegistrationStep.aboutYou => bloodGroupError == null &&
-          genderError == null &&
-          dateOfBirthError == null,
+      RegistrationStep.account =>
+        Validators.requiredField(name) == null &&
+            Validators.phone(phone) == null &&
+            Validators.password(password) == null,
+      RegistrationStep.aboutYou =>
+        bloodGroupError == null &&
+            genderError == null &&
+            dateOfBirthError == null,
       RegistrationStep.location => districtError == null && areaError == null,
       RegistrationStep.donation => lastDonationError == null,
       RegistrationStep.consent => _consentGiven,
@@ -211,17 +213,17 @@ class DonorRegistrationProvider extends ChangeNotifier {
   /// Green or Yellow, from the last donation date. Shown as a preview on
   /// the donation step. Before a gender is chosen we assume the longer gap.
   DonorStatus get startingStatus => eligibility.startingStatus(
-        _lastDonationDate,
-        _gender ?? Gender.other,
-        today,
-      );
+    _lastDonationDate,
+    _gender ?? Gender.other,
+    today,
+  );
 
   /// Days until a Yellow donor turns Green (0 when already Green).
   int get daysUntilAvailable => eligibility.daysUntilEligible(
-        _lastDonationDate,
-        _gender ?? Gender.other,
-        today,
-      );
+    _lastDonationDate,
+    _gender ?? Gender.other,
+    today,
+  );
 
   /// Text for the status chip: "Available", or "Available in 44 days".
   String get startingStatusLabel {

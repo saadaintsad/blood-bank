@@ -169,4 +169,108 @@ void main() {
     expect(mine.map((request) => request.id), [newer.id, 'request-1']);
     expect(mine.last.status, RequestStatus.cancelled);
   });
+
+  group('Emergency Alert', () {
+    test('the owner can send one, then not again for 15 days', () async {
+      // Sample Requester (user-3) owns the open request-1.
+      expect(await repository.getLastEmergencyAlert('user-3'), isNull);
+
+      final sentAt = await repository.sendEmergencyAlert(
+        'request-1',
+        userId: 'user-3',
+      );
+      expect(await repository.getLastEmergencyAlert('user-3'), sentAt);
+
+      // Three days later (request-1 is still open): refused by the
+      // "server" too, not only by the disabled button.
+      store.now = DateTime(2026, 12, 1);
+      await expectLater(
+        repository.sendEmergencyAlert('request-1', userId: 'user-3'),
+        throwsA(
+          isA<RequestException>().having(
+            (error) => error.message,
+            'message',
+            contains('12 days'),
+          ),
+        ),
+      );
+    });
+
+    test('allowed again 15 days later', () async {
+      await repository.sendEmergencyAlert('request-1', userId: 'user-3');
+      // A new open request, because request-1 has expired by then.
+      store.now = DateTime(2026, 12, 13);
+      final request = await repository.createRequest(
+        draft(ownerId: 'user-3', requiredDate: DateTime(2026, 12, 14)),
+      );
+
+      await repository.sendEmergencyAlert(request.id, userId: 'user-3');
+      expect(
+        await repository.getLastEmergencyAlert('user-3'),
+        DateTime(2026, 12, 13),
+      );
+    });
+
+    test('only the owner, and only while the request is open', () async {
+      await expectLater(
+        repository.sendEmergencyAlert('request-1', userId: 'user-1'),
+        throwsA(isA<RequestException>()),
+      );
+      await repository.closeRequest(
+        'request-1',
+        userId: 'user-3',
+        status: RequestStatus.fulfilled,
+      );
+      await expectLater(
+        repository.sendEmergencyAlert('request-1', userId: 'user-3'),
+        throwsA(isA<RequestException>()),
+      );
+    });
+  });
+
+  group('requests for donors', () {
+    test("district list has open requests, not the viewer's own", () async {
+      final dhaka = await repository.getDistrictOpenRequests(
+        'Dhaka',
+        viewerId: 'user-2',
+      );
+      expect(dhaka.map((r) => r.id), ['request-1', 'request-2']);
+
+      // Sample Requester doesn't see their own request-1.
+      final forOwner = await repository.getDistrictOpenRequests(
+        'Dhaka',
+        viewerId: 'user-3',
+      );
+      expect(forOwner.map((r) => r.id), ['request-2']);
+    });
+
+    test('closed requests are left out', () async {
+      await repository.closeRequest(
+        'request-1',
+        userId: 'user-3',
+        status: RequestStatus.cancelled,
+      );
+      final dhaka = await repository.getDistrictOpenRequests(
+        'Dhaka',
+        viewerId: 'user-2',
+      );
+      expect(dhaka.map((r) => r.id), ['request-2']);
+    });
+
+    test("the seeker's phone is shown to donors only", () async {
+      expect(
+        await repository.getSeekerPhone('request-1', viewerId: 'user-2'),
+        '01700000003',
+      );
+      expect(
+        await repository.getSeekerPhone('request-1', viewerId: 'user-1'),
+        isNull,
+      );
+    });
+
+    test('getRequest finds a request by id', () async {
+      expect((await repository.getRequest('request-1'))?.bloodGroup, 'B+');
+      expect(await repository.getRequest('request-999'), isNull);
+    });
+  });
 }

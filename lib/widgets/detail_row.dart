@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../theme/colors.dart';
-import '../../../theme/spacing.dart';
+import '../theme/colors.dart';
+import '../theme/spacing.dart';
 
-/// One labelled line on the Donor details screen: an icon, a small grey
+/// One labelled line on a details screen (Donor details, Request details): an icon, a small grey
 /// label and the value (text or any widget, such as a StatusChip).
 class DetailRow extends StatelessWidget {
   const DetailRow({

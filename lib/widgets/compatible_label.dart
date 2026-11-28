@@ -8,9 +8,11 @@ import '../theme/spacing.dart';
 /// patient).
 ///
 /// It is outlined in ink rather than filled, so it never looks like a
-/// status colour.
+/// status colour. Open Requests reuses it as "You can give".
 class CompatibleLabel extends StatelessWidget {
-  const CompatibleLabel({super.key});
+  const CompatibleLabel({super.key, this.text = 'Compatible'});
+
+  final String text;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class CompatibleLabel extends StatelessWidget {
         children: [
           const Icon(Icons.compare_arrows, size: 16, color: AppColors.inkMuted),
           const SizedBox(width: AppSpacing.xs),
-          Text('Compatible', style: Theme.of(context).textTheme.labelMedium),
+          Text(text, style: Theme.of(context).textTheme.labelMedium),
         ],
       ),
     );

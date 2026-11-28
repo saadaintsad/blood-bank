@@ -130,7 +130,20 @@ class MyRequestsScreen extends StatelessWidget {
       isBusy: provider.closingId == request.id,
       onMarkFulfilled: canClose ? () => _markFulfilled(context, request) : null,
       onCancel: canClose ? () => _cancel(context, request) : null,
+      onTap: () => _openDetails(context, request),
     );
+  }
+
+  /// Opens the request's details (the seeker view) and reloads the list
+  /// afterwards, because it may have been closed there.
+  Future<void> _openDetails(BuildContext context, BloodRequest request) async {
+    final provider = context.read<MyRequestsProvider>();
+    await Navigator.pushNamed(
+      context,
+      AppRoutes.requestDetails,
+      arguments: request.id,
+    );
+    provider.load();
   }
 
   Future<void> _markFulfilled(BuildContext context, BloodRequest request) {

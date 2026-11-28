@@ -3,14 +3,18 @@ import 'package:provider/provider.dart';
 
 import 'data/mock/mock_auth_repository.dart';
 import 'data/mock/mock_donor_repository.dart';
+import 'data/mock/mock_interest_repository.dart';
 import 'data/mock/mock_request_repository.dart';
 import 'data/mock/mock_store.dart';
 import 'data/repositories/donor_repository.dart';
+import 'data/repositories/interest_repository.dart';
 import 'data/repositories/request_repository.dart';
 import 'providers/auth_provider.dart';
 import 'providers/donor_search_provider.dart';
 import 'providers/my_requests_provider.dart';
+import 'providers/open_requests_provider.dart';
 import 'providers/post_request_provider.dart';
+import 'providers/request_details_provider.dart';
 import 'screens/auth/donor_registration/donor_registration_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/seeker_signup_screen.dart';
@@ -18,7 +22,9 @@ import 'screens/coming_soon/coming_soon_screen.dart';
 import 'screens/donor/donor_details_screen.dart';
 import 'screens/home/home_screen.dart';
 import 'screens/requests/my_requests_screen.dart';
+import 'screens/requests/open_requests_screen.dart';
 import 'screens/requests/post_request_screen.dart';
+import 'screens/requests/request_details_screen.dart';
 import 'screens/search/find_blood_screen.dart';
 import 'theme/app_theme.dart';
 import 'utils/app_routes.dart';
@@ -54,6 +60,9 @@ class _ReddifyAppState extends State<ReddifyApp> {
         Provider<DonorRepository>(create: (_) => MockDonorRepository(_store)),
         Provider<RequestRepository>(
           create: (_) => MockRequestRepository(_store),
+        ),
+        Provider<InterestRepository>(
+          create: (_) => MockInterestRepository(_store),
         ),
         // ChangeNotifierProvider: also rebuilds listeners when it changes.
         ChangeNotifierProvider(
@@ -115,6 +124,35 @@ class _ReddifyAppState extends State<ReddifyApp> {
                 userId: user.id,
               )..load(),
               child: const MyRequestsScreen(),
+            );
+          },
+          // The request id comes in as route arguments (a String).
+          AppRoutes.requestDetails: (context) {
+            final user = context.read<AuthProvider>().currentUser;
+            if (user == null) return const LoginScreen();
+            final requestId =
+                ModalRoute.of(context)!.settings.arguments as String;
+            return ChangeNotifierProvider(
+              create: (context) => RequestDetailsProvider(
+                context.read<RequestRepository>(),
+                context.read<InterestRepository>(),
+                context.read<DonorRepository>(),
+                requestId: requestId,
+                viewer: user,
+              )..load(),
+              child: const RequestDetailsScreen(),
+            );
+          },
+          AppRoutes.openRequests: (context) {
+            final user = context.read<AuthProvider>().currentUser;
+            if (user == null) return const LoginScreen();
+            return ChangeNotifierProvider(
+              create: (context) => OpenRequestsProvider(
+                context.read<RequestRepository>(),
+                context.read<DonorRepository>(),
+                viewerId: user.id,
+              )..load(),
+              child: const OpenRequestsScreen(),
             );
           },
           AppRoutes.comingSoon: (_) => const ComingSoonScreen(),

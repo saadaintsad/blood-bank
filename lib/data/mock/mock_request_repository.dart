@@ -1,6 +1,7 @@
 import '../../models/blood_request.dart';
 import '../../models/enums.dart';
 import '../../models/new_blood_request.dart';
+import '../../utils/emergency_rules.dart';
 import '../../utils/request_rules.dart';
 import '../repositories/request_repository.dart';
 import 'mock_store.dart';
@@ -31,6 +32,82 @@ class MockRequestRepository implements RequestRepository {
         .where((request) => request.ownerId == userId)
         .toList();
     return _newestFirst(requests);
+  }
+
+  @override
+  Future<BloodRequest?> getRequest(String requestId) async {
+    await Future.delayed(delay);
+    return _store.requestsById[requestId];
+  }
+
+  @override
+  Future<List<BloodRequest>> getDistrictOpenRequests(
+    String district, {
+    required String viewerId,
+  }) async {
+    await Future.delayed(delay);
+    final requests = _store.requestsById.values
+        .where(
+          (request) =>
+              request.district == district &&
+              request.ownerId != viewerId &&
+              isLive(request, _store.now),
+        )
+        .toList();
+    return requests..sort((a, b) => a.requiredDate.compareTo(b.requiredDate));
+  }
+
+  @override
+  Future<String?> getSeekerPhone(
+    String requestId, {
+    required String viewerId,
+  }) async {
+    await Future.delayed(delay);
+    // The same check the Supabase RLS rule will make: donors only.
+    if (!_store.donorProfilesByUserId.containsKey(viewerId)) return null;
+    return _store.requestsById[requestId]?.contactPhone;
+  }
+
+  @override
+  Future<DateTime?> getLastEmergencyAlert(String userId) async {
+    await Future.delayed(delay);
+    return _store.lastEmergencyAlertByUserId[userId];
+  }
+
+  @override
+  Future<DateTime> sendEmergencyAlert(
+    String requestId, {
+    required String userId,
+  }) async {
+    await Future.delayed(delay);
+
+    final request = _store.requestsById[requestId];
+    if (request == null || request.ownerId != userId) {
+      throw const RequestException(
+        'Only the person who posted a request can send an Emergency Alert.',
+      );
+    }
+    if (!isLive(request, _store.now)) {
+      throw const RequestException('This request is already closed.');
+    }
+    // The server-side 15-day limit, so it holds even if the button is
+    // somehow pressed while disabled.
+    final daysLeft = daysUntilEmergencyAllowed(
+      _store.lastEmergencyAlertByUserId[userId],
+      _store.now,
+    );
+    if (daysLeft > 0) {
+      throw RequestException(
+        'You can send another Emergency Alert in '
+        '${daysLeft == 1 ? '1 day' : '$daysLeft days'}.',
+      );
+    }
+
+    // A real version would notify every donor in request.district with
+    // alerts ON here (a Supabase Edge Function + Firebase Cloud Messaging).
+    final sentAt = _store.now;
+    _store.lastEmergencyAlertByUserId[userId] = sentAt;
+    return sentAt;
   }
 
   @override
@@ -92,7 +169,30 @@ class MockRequestRepository implements RequestRepository {
 
     final closed = request.copyWith(status: status);
     _store.requestsById[requestId] = closed;
+    _updateResponsesAfterClosing(requestId, status);
     return closed;
+  }
+
+  /// What closing a request means for the donors who tapped "I'm
+  /// Interested" ("Request closes early" in docs/requirements.md). The
+  /// "This request was closed by the seeker" notification is mocked.
+  void _updateResponsesAfterClosing(String requestId, RequestStatus status) {
+    final now = _store.now;
+    final responses = _store.responsesById.values
+        .where((response) => response.requestId == requestId)
+        .toList();
+    for (final response in responses) {
+      final updated = status == RequestStatus.cancelled
+          // Cancelled: back to their previous status (visible) at once.
+          ? response.copyWith(endedEarlyAt: now)
+          // Fulfilled: ask "Did you donate?" now, unless already due.
+          : response.copyWith(
+              askDonatedAt: response.askDonatedAt.isAfter(now)
+                  ? now
+                  : response.askDonatedAt,
+            );
+      _store.responsesById[response.id] = updated;
+    }
   }
 
   /// Sorts by the time each request was posted, newest first.

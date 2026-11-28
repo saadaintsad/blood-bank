@@ -16,8 +16,9 @@ abstract class DonorRepository {
 
   /// Donors matching [filters], already in Find Blood order.
   ///
-  /// Includes every compatible blood group. Leaves out Red donors and the
-  /// viewer's own profile ([viewerId]).
+  /// Includes every compatible blood group. Leaves out Red donors, donors
+  /// in their 3-hour "I'm Interested" window and the viewer's own profile
+  /// ([viewerId]).
   Future<List<DonorSearchResult>> searchDonors(
     DonorSearchFilters filters, {
     required String viewerId,

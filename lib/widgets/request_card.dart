@@ -9,11 +9,12 @@ import 'app_button.dart';
 import 'blood_group_badge.dart';
 import 'request_status_chip.dart';
 
-/// One blood request in My Requests.
+/// One blood request in My Requests or Open Requests.
 ///
 /// The blood group stamp starts the row, then the patient, units, hospital
 /// and date. Pass [onMarkFulfilled] and [onCancel] only while the request
-/// is still Open; closed requests show no buttons.
+/// is still Open; closed requests show no buttons. [onTap] makes the whole
+/// card open the request's details.
 class RequestCard extends StatelessWidget {
   const RequestCard({
     super.key,
@@ -21,6 +22,8 @@ class RequestCard extends StatelessWidget {
     required this.status,
     this.onMarkFulfilled,
     this.onCancel,
+    this.onTap,
+    this.label,
     this.isBusy = false,
   });
 
@@ -32,12 +35,29 @@ class RequestCard extends StatelessWidget {
   final VoidCallback? onMarkFulfilled;
   final VoidCallback? onCancel;
 
+  /// Called when the card itself is tapped, e.g. to open the details.
+  final VoidCallback? onTap;
+
+  /// An extra tag next to the status, e.g. "You can give" on Open
+  /// Requests.
+  final Widget? label;
+
   /// True while this request is being closed: shows a spinner and blocks
   /// a second tap.
   final bool isBusy;
 
   @override
   Widget build(BuildContext context) {
+    return Card(
+      // antiAlias clips the InkWell's ripple to the card's rounded corners.
+      clipBehavior: Clip.antiAlias,
+      // InkWell shows the Material ripple when tapped. With onTap null it
+      // does nothing, so cards without onTap behave as before.
+      child: InkWell(onTap: onTap, child: _buildContent(context)),
+    );
+  }
+
+  Widget _buildContent(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final mutedStyle = textTheme.bodyMedium?.copyWith(
       color: AppColors.inkMuted,
@@ -46,52 +66,60 @@ class RequestCard extends StatelessWidget {
     final notes = request.notes;
     final hasActions = onMarkFulfilled != null || onCancel != null;
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                BloodGroupBadge(bloodGroup: request.bloodGroup),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(request.patientName, style: textTheme.titleMedium),
-                      const SizedBox(height: 2),
-                      Text(
-                        '${units == 1 ? '1 unit' : '$units units'} · '
-                        '${request.hospital}, ${request.district}',
-                        style: mutedStyle,
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        'Needed on ${formatDate(request.requiredDate)}',
-                        style: mutedStyle,
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      RequestStatusChip(status: status),
-                    ],
-                  ),
+    return Padding(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              BloodGroupBadge(bloodGroup: request.bloodGroup),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(request.patientName, style: textTheme.titleMedium),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${units == 1 ? '1 unit' : '$units units'} · '
+                      '${request.hospital}, ${request.district}',
+                      style: mutedStyle,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Needed on ${formatDate(request.requiredDate)}',
+                      style: mutedStyle,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                    // Wrap moves the label to a new line if the row is
+                    // too narrow (360 dp phones).
+                    Wrap(
+                      spacing: AppSpacing.sm,
+                      runSpacing: AppSpacing.xs,
+                      children: [
+                        RequestStatusChip(status: status),
+                        // `?label` adds the label only when it isn't null.
+                        ?label,
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            if (notes != null) ...[
-              const SizedBox(height: AppSpacing.sm + 4),
-              Text(notes, style: textTheme.bodyMedium),
+              ),
             ],
-            if (hasActions) ...[
-              const SizedBox(height: AppSpacing.md),
-              const Divider(),
-              const SizedBox(height: AppSpacing.sm + 4),
-              _buildActions(),
-            ],
+          ),
+          if (notes != null) ...[
+            const SizedBox(height: AppSpacing.sm + 4),
+            Text(notes, style: textTheme.bodyMedium),
           ],
-        ),
+          if (hasActions) ...[
+            const SizedBox(height: AppSpacing.md),
+            const Divider(),
+            const SizedBox(height: AppSpacing.sm + 4),
+            _buildActions(),
+          ],
+        ],
       ),
     );
   }

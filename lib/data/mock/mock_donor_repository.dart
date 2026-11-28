@@ -5,6 +5,7 @@ import '../../models/enums.dart';
 import '../../utils/blood_compatibility.dart';
 import '../../utils/donor_search.dart';
 import '../../utils/eligibility.dart';
+import '../../utils/interest_rules.dart';
 import '../repositories/donor_repository.dart';
 import 'mock_store.dart';
 
@@ -63,6 +64,14 @@ class MockDonorRepository implements DonorRepository {
       );
       if (status == DonorStatus.notAvailable) continue; // Red is hidden.
       if (filters.onlyAvailable && status != DonorStatus.available) continue;
+      // Hidden for 3 hours after tapping "I'm Interested", so other
+      // seekers don't call them while they help someone.
+      final response = activeResponseOf(
+        _store.responsesById.values,
+        profile.userId,
+        _store.now,
+      );
+      if (response != null) continue;
 
       final user = _store.userById(profile.userId);
       if (user == null) continue;

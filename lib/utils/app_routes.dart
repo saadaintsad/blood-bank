@@ -30,6 +30,13 @@ class AppRoutes {
   /// The logged-in user's own requests, with Mark Fulfilled and Cancel.
   static const String myRequests = '/my-requests';
 
+  /// One request's details. Pass the request id (a String) as
+  /// `arguments`. The seeker sees their own view, donors see theirs.
+  static const String requestDetails = '/request-details';
+
+  /// Open requests in the donor's district. Donors only.
+  static const String openRequests = '/open-requests';
+
   /// Placeholder for screens that are not built yet. Pass the feature
   /// name as `arguments`, e.g. pushNamed(comingSoon, arguments: 'Find Blood').
   static const String comingSoon = '/coming-soon';

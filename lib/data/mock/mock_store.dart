@@ -1,5 +1,6 @@
 import '../../models/blood_request.dart';
 import '../../models/donor.dart';
+import '../../models/donor_response.dart';
 import '../../models/user.dart';
 import '../../utils/request_rules.dart';
 import 'sample_donors.dart';
@@ -37,17 +38,24 @@ class MockStore {
     for (final request in sampleRequests(this.today)) {
       requestsById[request.id] = request;
     }
+    for (final response in sampleResponses(this.now, requestsById)) {
+      responsesById[response.id] = response;
+    }
   }
 
   /// The day the mock data treats as "today". Used for working out who is
   /// Yellow and for how many more days.
   final DateTime today;
 
-  final DateTime? _fixedNow;
+  DateTime? _fixedNow;
 
   /// The current time. Read fresh each time in the app, so a request
   /// expires even while the app stays open.
   DateTime get now => _fixedNow ?? DateTime.now();
+
+  /// Fixes the clock at [value]. Tests use it to move time forward, e.g.
+  /// to check that a donor's 3-hour window has ended.
+  set now(DateTime value) => _fixedNow = value;
 
   /// Accounts, looked up by their 01XXXXXXXXX number.
   final Map<String, AppUser> usersByPhone = {};
@@ -62,14 +70,25 @@ class MockStore {
   /// Blood requests, looked up by their id.
   final Map<String, BloodRequest> requestsById = {};
 
+  /// "I'm Interested" responses, looked up by their id.
+  final Map<String, DonorResponse> responsesById = {};
+
+  /// When each user last sent an Emergency Alert, by user id. Users who
+  /// never sent one are missing from the map.
+  final Map<String, DateTime> lastEmergencyAlertByUserId = {};
+
   int _nextUserNumber = sampleUsers.length + 1;
   int _nextRequestNumber = 100;
+  int _nextResponseNumber = 100;
 
   /// A new unique id, like 'user-4'.
   String createUserId() => 'user-${_nextUserNumber++}';
 
   /// A new unique request id, like 'request-100'.
   String createRequestId() => 'request-${_nextRequestNumber++}';
+
+  /// A new unique response id, like 'response-100'.
+  String createResponseId() => 'response-${_nextResponseNumber++}';
 
   /// The account with this [id], or null. Accounts are stored by phone,
   /// so this looks through them all; fine for a few dozen sample users.

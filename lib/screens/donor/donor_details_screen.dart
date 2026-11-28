@@ -8,7 +8,7 @@ import '../../widgets/contact_buttons.dart';
 import '../../widgets/contact_locked_banner.dart';
 import '../../widgets/privacy_note.dart';
 import '../../widgets/status_chip.dart';
-import 'widgets/detail_row.dart';
+import '../../widgets/detail_row.dart';
 
 /// Everything other users may see about one donor, plus Call / SMS for
 /// viewers with an open blood request.

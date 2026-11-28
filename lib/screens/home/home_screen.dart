@@ -23,12 +23,22 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLoggedIn = context.watch<AuthProvider>().isLoggedIn;
+    final user = context.watch<AuthProvider>().currentUser;
+    final isLoggedIn = user != null;
 
     return Scaffold(
       appBar: AppBar(
         title: const AppLogo(onDark: true),
         actions: [
+          // Temporary: Open Requests (donors only) lives here until the
+          // Dashboard exists.
+          if (user?.isDonor ?? false)
+            IconButton(
+              icon: const Icon(Icons.volunteer_activism_outlined),
+              tooltip: 'Open Requests',
+              onPressed: () =>
+                  Navigator.pushNamed(context, AppRoutes.openRequests),
+            ),
           // Temporary: My Requests lives here until the Dashboard exists.
           if (isLoggedIn)
             IconButton(

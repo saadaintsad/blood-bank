@@ -22,3 +22,12 @@ const List<String> _monthNames = [
 String formatDate(DateTime date) {
   return '${date.day} ${_monthNames[date.month - 1]} ${date.year}';
 }
+
+/// Formats the time of day as "4:10 PM" (12-hour clock, as people in
+/// Bangladesh usually say it). Midnight is 12:00 AM and noon 12:00 PM.
+String formatTime(DateTime time) {
+  final hour = time.hour % 12 == 0 ? 12 : time.hour % 12;
+  final minute = time.minute.toString().padLeft(2, '0');
+  final period = time.hour < 12 ? 'AM' : 'PM';
+  return '$hour:$minute $period';
+}

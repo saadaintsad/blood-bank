@@ -3,13 +3,19 @@ import 'package:provider/provider.dart';
 
 import 'data/mock/mock_auth_repository.dart';
 import 'data/mock/mock_donor_repository.dart';
+import 'data/mock/mock_request_repository.dart';
 import 'data/mock/mock_store.dart';
+import 'data/repositories/donor_repository.dart';
+import 'data/repositories/request_repository.dart';
 import 'providers/auth_provider.dart';
+import 'providers/donor_search_provider.dart';
 import 'screens/auth/donor_registration/donor_registration_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/seeker_signup_screen.dart';
 import 'screens/coming_soon/coming_soon_screen.dart';
+import 'screens/donor/donor_details_screen.dart';
 import 'screens/home/home_screen.dart';
+import 'screens/search/find_blood_screen.dart';
 import 'theme/app_theme.dart';
 import 'utils/app_routes.dart';
 import 'utils/constants.dart';
@@ -17,26 +23,42 @@ import 'widgets/phone_frame.dart';
 
 /// The root widget of Reddify.
 ///
-/// It creates the app-wide providers, sets the theme and lists every
-/// screen the app can navigate to (the routes).
-class ReddifyApp extends StatelessWidget {
+/// It creates the repositories and app-wide providers, sets the theme and
+/// lists every screen the app can navigate to (the routes).
+class ReddifyApp extends StatefulWidget {
   const ReddifyApp({super.key});
 
   @override
+  State<ReddifyApp> createState() => _ReddifyAppState();
+}
+
+// Stateful so the store is created once and kept, not rebuilt each time
+// this widget rebuilds.
+class _ReddifyAppState extends State<ReddifyApp> {
+  // One shared in-memory "database" for every mock repository, so a donor
+  // profile saved by one is seen by the others.
+  final MockStore _store = MockStore();
+
+  @override
   Widget build(BuildContext context) {
-    // ChangeNotifierProvider creates AuthProvider once and makes it
-    // available to every screen below it. To switch to Supabase later,
-    // only the repositories passed in here change.
-    return ChangeNotifierProvider(
-      create: (_) {
-        // One shared in-memory "database" for both mock repositories, so
-        // a donor profile saved by one is seen by the other.
-        final store = MockStore();
-        return AuthProvider(
-          MockAuthRepository(store),
-          MockDonorRepository(store),
-        );
-      },
+    // MultiProvider puts several providers above the whole app. Any screen
+    // can then read them with context.read / context.watch. To switch to
+    // Supabase later, only the repositories created here change.
+    return MultiProvider(
+      providers: [
+        // Plain Provider: hands out an object that never changes.
+        Provider<DonorRepository>(create: (_) => MockDonorRepository(_store)),
+        Provider<RequestRepository>(
+          create: (_) => MockRequestRepository(_store),
+        ),
+        // ChangeNotifierProvider: also rebuilds listeners when it changes.
+        ChangeNotifierProvider(
+          create: (context) => AuthProvider(
+            MockAuthRepository(_store),
+            context.read<DonorRepository>(),
+          ),
+        ),
+      ],
       child: MaterialApp(
         title: AppStrings.appName,
         debugShowCheckedModeBanner: false,
@@ -53,6 +75,19 @@ class ReddifyApp extends StatelessWidget {
           AppRoutes.login: (_) => const LoginScreen(),
           AppRoutes.seekerSignup: (_) => const SeekerSignupScreen(),
           AppRoutes.donorRegistration: (_) => const DonorRegistrationScreen(),
+          // Find Blood gets its own DonorSearchProvider. It is created when
+          // the screen opens and thrown away when it closes, so the filters
+          // start fresh each visit. `..load()` (a cascade) starts loading
+          // straight after creating it.
+          AppRoutes.findBlood: (context) => ChangeNotifierProvider(
+                create: (context) => DonorSearchProvider(
+                  context.read<DonorRepository>(),
+                  context.read<RequestRepository>(),
+                  viewerId: context.read<AuthProvider>().currentUser?.id ?? '',
+                )..load(),
+                child: const FindBloodScreen(),
+              ),
+          AppRoutes.donorDetails: (_) => const DonorDetailsScreen(),
           AppRoutes.comingSoon: (_) => const ComingSoonScreen(),
         },
       ),

@@ -5,8 +5,7 @@ import 'app_routes.dart';
 /// Closes every screen above Home after the user creates an account.
 ///
 /// When [continueToFindBlood] is true, it then opens Find Blood, because
-/// the user started there (Home > Find Blood > Sign up). Find Blood is
-/// still a placeholder screen, so it opens AppRoutes.comingSoon.
+/// the user started there (Home > Find Blood > Sign up).
 void returnHomeAfterSignUp(
   NavigatorState navigator, {
   bool continueToFindBlood = false,
@@ -15,6 +14,6 @@ void returnHomeAfterSignUp(
   // route.isFirst is true for the bottom screen of the stack, Home.
   navigator.popUntil((route) => route.isFirst);
   if (continueToFindBlood) {
-    navigator.pushNamed(AppRoutes.comingSoon, arguments: 'Find Blood');
+    navigator.pushNamed(AppRoutes.findBlood);
   }
 }

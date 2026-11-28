@@ -136,4 +136,48 @@ void main() {
       );
     });
   });
+
+  group('currentStatus', () {
+    final today = DateTime(2026, 11, 27);
+    final fortyDaysAgo = DateTime(2026, 10, 18);
+    final yearAgo = DateTime(2025, 11, 27);
+
+    test('a saved Yellow turns Green once the waiting period is over', () {
+      expect(
+        currentStatus(
+          DonorStatus.recentlyDonated,
+          yearAgo,
+          Gender.male,
+          today,
+        ),
+        DonorStatus.available,
+      );
+    });
+
+    test('stays Yellow while the waiting period runs', () {
+      expect(
+        currentStatus(
+          DonorStatus.recentlyDonated,
+          fortyDaysAgo,
+          Gender.male,
+          today,
+        ),
+        DonorStatus.recentlyDonated,
+      );
+    });
+
+    test('Red stays Red, whatever the dates say', () {
+      expect(
+        currentStatus(DonorStatus.notAvailable, null, Gender.female, today),
+        DonorStatus.notAvailable,
+      );
+    });
+
+    test('a never-donated Green donor stays Green', () {
+      expect(
+        currentStatus(DonorStatus.available, null, Gender.female, today),
+        DonorStatus.available,
+      );
+    });
+  });
 }

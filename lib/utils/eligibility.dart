@@ -71,6 +71,22 @@ int daysUntilEligible(DateTime? lastDonation, Gender gender, DateTime today) {
   return days > 0 ? days : 0;
 }
 
+/// A donor's status today.
+///
+/// Red is set by the donor, so it stays Red. Otherwise the waiting period
+/// decides: Yellow while it runs, Green once it ends. That is how Yellow
+/// turns Green "automatically" even though the saved status is still
+/// Yellow (the server will do this on a schedule later).
+DonorStatus currentStatus(
+  DonorStatus savedStatus,
+  DateTime? lastDonation,
+  Gender gender,
+  DateTime today,
+) {
+  if (savedStatus == DonorStatus.notAvailable) return DonorStatus.notAvailable;
+  return startingStatus(lastDonation, gender, today);
+}
+
 /// The status a new donor starts with: Yellow (recently donated) while the
 /// waiting period after [lastDonation] is still running, otherwise Green.
 DonorStatus startingStatus(

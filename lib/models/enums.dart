@@ -22,6 +22,18 @@ enum DonorStatus {
   final String label;
 }
 
+/// Where a blood request is in its life: Open → Fulfilled, or
+/// Open → Cancelled (see "Blood requests" in docs/requirements.md).
+enum RequestStatus {
+  open('Open'),
+  fulfilled('Fulfilled'),
+  cancelled('Cancelled');
+
+  const RequestStatus(this.label);
+
+  final String label;
+}
+
 /// A donor's gender. It decides the waiting period between donations
 /// (see utils/eligibility.dart), so registration asks for it.
 enum Gender {

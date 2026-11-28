@@ -43,7 +43,7 @@ class HomeActions extends StatelessWidget {
           // Logged-out users sign up first (just name, number, password),
           // then continue to Find Blood.
           onPressed: isLoggedIn
-              ? () => _openComingSoon(context, 'Find Blood')
+              ? () => Navigator.pushNamed(context, AppRoutes.findBlood)
               : () => Navigator.pushNamed(
                     context,
                     AppRoutes.seekerSignup,

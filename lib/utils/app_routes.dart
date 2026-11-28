@@ -17,6 +17,12 @@ class AppRoutes {
   /// The multi-step donor registration form.
   static const String donorRegistration = '/register-donor';
 
+  /// Donor search. Needs a logged-in user.
+  static const String findBlood = '/find-blood';
+
+  /// One donor's details. Pass a DonorDetailsArgs as `arguments`.
+  static const String donorDetails = '/donor-details';
+
   /// Placeholder for screens that are not built yet. Pass the feature
   /// name as `arguments`, e.g. pushNamed(comingSoon, arguments: 'Find Blood').
   static const String comingSoon = '/coming-soon';

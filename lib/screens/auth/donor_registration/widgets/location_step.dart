@@ -8,6 +8,7 @@ import '../../../../utils/validators.dart';
 import '../../../../widgets/app_text_field.dart';
 import '../../../../widgets/labelled_field.dart';
 import '../../../../widgets/privacy_note.dart';
+import '../../../../widgets/searchable_dropdown.dart';
 
 /// District, area and optional extra details.
 ///
@@ -31,7 +32,7 @@ class LocationStep extends StatelessWidget {
         const SizedBox(height: AppSpacing.lg),
         LabelledField(
           label: 'District',
-          child: _SearchableDropdown(
+          child: SearchableDropdown(
             options: bangladeshDistricts,
             selected: registration.district,
             hint: 'Type or choose a district',
@@ -66,7 +67,7 @@ class LocationStep extends StatelessWidget {
     if (district == 'Dhaka') {
       return LabelledField(
         label: 'Area',
-        child: _SearchableDropdown(
+        child: SearchableDropdown(
           // A new key when the district changes makes Flutter build a
           // fresh dropdown, so the old district's area doesn't linger.
           key: const ValueKey('dhaka-area'),
@@ -83,7 +84,7 @@ class LocationStep extends StatelessWidget {
     if (district == null) {
       return const LabelledField(
         label: 'Area',
-        child: _SearchableDropdown(
+        child: SearchableDropdown(
           options: [],
           selected: null,
           hint: 'Choose a district first',
@@ -101,53 +102,6 @@ class LocationStep extends StatelessWidget {
       initialValue: registration.area,
       onChanged: registration.setArea,
       validator: (value) => Validators.requiredField(value, fieldName: 'Area'),
-    );
-  }
-}
-
-/// A full-width DropdownMenu you can type into to filter the list.
-/// Used for the 64 districts and the Dhaka areas.
-class _SearchableDropdown extends StatelessWidget {
-  const _SearchableDropdown({
-    super.key,
-    required this.options,
-    required this.selected,
-    required this.hint,
-    required this.icon,
-    this.errorText,
-    this.onSelected,
-    this.enabled = true,
-  });
-
-  final List<String> options;
-  final String? selected;
-  final String hint;
-  final IconData icon;
-  final String? errorText;
-  final ValueChanged<String>? onSelected;
-  final bool enabled;
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownMenu<String>(
-      initialSelection: selected,
-      enabled: enabled,
-      // Stretch to the full width of the form.
-      expandedInsets: EdgeInsets.zero,
-      // Typing narrows the list, e.g. "dh" shows Dhaka and Dhanmondi.
-      enableFilter: true,
-      requestFocusOnTap: true,
-      menuHeight: 320,
-      hintText: hint,
-      leadingIcon: Icon(icon),
-      errorText: errorText,
-      dropdownMenuEntries: [
-        for (final option in options)
-          DropdownMenuEntry(value: option, label: option),
-      ],
-      onSelected: (value) {
-        if (value != null) onSelected?.call(value);
-      },
     );
   }
 }
